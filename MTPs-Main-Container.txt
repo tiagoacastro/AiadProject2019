@@ -1,1 +1,1 @@
-http://GatoratorV2:7778/acc
+http://batosta:7778/acc
