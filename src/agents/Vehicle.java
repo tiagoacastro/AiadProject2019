@@ -10,7 +10,21 @@ public abstract class Vehicle extends Agent {
         Vehicle agent nickname.
      */
     public String agentNickname;
+
+    /*
+        Vehicle known traffic lights.
+     */
     public AID[] trafficLightsAgents;
+
+    /*
+        Vehicle starting point.
+     */
+    public String startingPoint;
+
+    /*
+        Vehicle target point.
+     */
+    public String targetPoint;
 
 
     /*
@@ -23,4 +37,9 @@ public abstract class Vehicle extends Agent {
         Method that is a placeholder for agent specific cleanup code.
      */
     protected abstract void takeDown();
+
+    /*
+        Method that defines the starting and target point for the vehicle.
+     */
+    public abstract void getPoints(final String vehicleStartingPoint, final String vehicleTargetPoint);
 }

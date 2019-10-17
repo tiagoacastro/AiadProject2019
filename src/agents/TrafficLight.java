@@ -45,8 +45,8 @@ public class TrafficLight extends Agent {
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("communication_car_tf");
-        sd.setName("JADE-tf");
+        sd.setType("communication_car_tl");
+        sd.setName("JADE-tl");
         dfd.addServices(sd);
         try{
 

@@ -23,13 +23,12 @@ public class Car extends Vehicle{
 
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("communication_car_tf");
+        sd.setType("communication_car_tl");
         template.addServices(sd);
-
 
         addBehaviour(new SimpleBehaviour(this) {
 
-            private boolean start = false;
+            private boolean done = false;
 
             @Override
             public void action() {
@@ -51,12 +50,13 @@ public class Car extends Vehicle{
                     fe.printStackTrace();
                 }
 
-                start = true;
+                done = true;
             }
 
             @Override
             public boolean done() {
-                return start;
+
+                return done;
             }
         });
     }
@@ -70,5 +70,12 @@ public class Car extends Vehicle{
         System.out.println("Car-agent " + agentNickname + " has terminated!");
     }
 
+    /*
+        Method that defines the starting and target point for the car.
+     */
+    public void getPoints(final String vehicleStartingPoint, final String vehicleTargetPoint){
 
+        startingPoint = vehicleStartingPoint;
+        targetPoint = vehicleTargetPoint;
+    }
 }
