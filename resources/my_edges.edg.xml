@@ -1,0 +1,17 @@
+<edges>
+    <edge from="n1" to="n2" id="1to2" type="1L30"/>
+    <edge from="n2" to="n3" id="2to3" type="1L30"/>
+    <edge from="n1" to="n4" id="1to4" type="1L30"/>
+    <edge from="n2" to="n5" id="2to5" type="1L30"/>
+    <edge from="n3" to="n6" id="3to6" type="1L30"/>
+    <edge from="n4" to="n5" id="4to5" type="1L30"/>
+    <edge from="n5" to="n6" id="5to6" type="1L30"/>
+    <edge from="n4" to="n7" id="4to7" type="1L30"/>
+    <edge from="n5" to="n8" id="5to8" type="1L30"/>
+    <edge from="n6" to="n9" id="6to9" type="1L30"/>
+    <edge from="n7" to="n8" id="7to8" type="1L30"/>
+    <edge from="n8" to="n9" id="8to9" type="1L30"/>
+</edges>
+
+
+

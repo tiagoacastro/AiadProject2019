@@ -1,0 +1,7 @@
+1. my_nodes.nod.xml
+2. my_edges.edg.xml
+3. my_types.type.xml
+4. netconvert --node-files my_nodes.nod.xml --edge-files my_edges.edg.xml -t my_types.type.xml -o my_net.net.xml
+5. my_routes.rou.xml
+6. my_config_file.sumocfg
+7. sumo-gui -c my_config_file.sumocfg
