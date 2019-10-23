@@ -1,17 +1,27 @@
 package app;
 
+import agents.TrafficLight;
+
+import jade.core.Runtime;
+import jade.core.ProfileImpl;
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+
 public class Main {
+
+    private static Runtime runtime;
+    private static ContainerController mainContainer;
 
     private static Graph graph = new Graph();
 
@@ -19,6 +29,10 @@ public class Main {
 
         parseNodesFile();
         parseEdgesFile();
+
+        startJADE();
+
+        createAgents();
     }
 
     /*
@@ -92,6 +106,36 @@ public class Main {
         for(int i = 0; i < graph.getNodes().size(); i++){
 
             graph.getNodes().get(i).getNeighbours();
+        }
+    }
+
+
+    private static void startJADE(){
+
+        runtime = Runtime.instance();
+        mainContainer = runtime.createMainContainer(new ProfileImpl());
+    }
+
+    private static void createAgents(){
+
+        createTrafficLights();
+//        createVehicles();
+    }
+
+    private static void createTrafficLights() {
+
+        try {
+
+            for (int i = 0; i < graph.getNodes().size(); i++) {
+
+                TrafficLight tlAgent = new TrafficLight();
+                AgentController ac = mainContainer.acceptNewAgent("tl" + i, tlAgent);
+                ac.start();
+            }
+        }
+        catch(StaleProxyException spException){
+
+            spException.printStackTrace();
         }
     }
 }
