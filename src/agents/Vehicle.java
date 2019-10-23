@@ -37,9 +37,4 @@ public abstract class Vehicle extends Agent {
         Method that is a placeholder for agent specific cleanup code.
      */
     protected abstract void takeDown();
-
-    /*
-        Method that defines the starting and target point for the vehicle.
-     */
-    public abstract void getPoints(final String vehicleStartingPoint, final String vehicleTargetPoint);
 }

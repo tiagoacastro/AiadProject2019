@@ -6,10 +6,13 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import java.util.Random;
 
 
 public class Car extends Vehicle{
 
+
+    private int urgencyPoints;
 
     /*
        Method that is a placeholder for agent specific startup code.
@@ -20,6 +23,9 @@ public class Car extends Vehicle{
         int pos = getAID().getName().indexOf("@");
         agentNickname = getAID().getName().substring(0, pos);
         System.out.println("Car-agent " + agentNickname + " has started!");
+
+        Random rand = new Random();
+        urgencyPoints = rand.nextInt(1000);
 
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
@@ -68,14 +74,5 @@ public class Car extends Vehicle{
     protected void takeDown(){
 
         System.out.println("Car-agent " + agentNickname + " has terminated!");
-    }
-
-    /*
-        Method that defines the starting and target point for the car.
-     */
-    public void getPoints(final String vehicleStartingPoint, final String vehicleTargetPoint){
-
-        startingPoint = vehicleStartingPoint;
-        targetPoint = vehicleTargetPoint;
     }
 }
