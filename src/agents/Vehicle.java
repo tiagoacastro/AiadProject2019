@@ -17,14 +17,14 @@ public abstract class Vehicle extends Agent {
     public AID[] trafficLightsAgents;
 
     /*
-        Vehicle starting point.
+        Vehicle starting node.
      */
-    public String startingPoint;
+    public int startingNode;
 
     /*
-        Vehicle target point.
+        Vehicle target node.
      */
-    public String targetPoint;
+    public int targetNode;
 
 
     /*
