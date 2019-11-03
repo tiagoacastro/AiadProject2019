@@ -4,29 +4,164 @@
 
 package app;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Graph {
 
-    private List<GraphNode> nodes = new ArrayList<GraphNode>();
-    private int numberOfNodes = 0;
+    private Set<GraphNode> nodes;
+    private boolean directed;
 
-    public boolean checkForAvailability() { // will be used in Main.java
-        return this.numberOfNodes > 1;
+    public Graph (boolean directed){
+        this.directed = directed;
+        nodes = new HashSet<>();
     }
 
-    public void createNode(GraphNode node) {
-        this.nodes.add(node);
-        this.numberOfNodes++; // a node has been added
+    public void addNode(GraphNode... node){
+        nodes.addAll(Arrays.asList(node));
     }
 
-    public List<GraphNode> getNodes(){
+    public void addEdge(GraphNode source, GraphNode destination, double weight){
+        nodes.add(source);
+        nodes.add(destination);
 
-        return nodes;
+        addEdgeHelper(source, destination, weight);
+
+        if(!directed && source != destination){
+            addEdgeHelper(destination, source, weight);
+        }
+
     }
 
-    public int getNumberOfNodes() {
-        return this.numberOfNodes;
+    public void addEdgeHelper(GraphNode n1, GraphNode n2, double weight){
+        for (GraphEdge edge: n1.edges){
+            if(edge.getStart() == n1 && edge.getEnd() == n2){
+                edge.setWeight(weight);
+                return;
+            }
+        }
+
+        n1.edges.add(new GraphEdge(n1, n2, weight));
     }
+
+    public void printEdges(){
+        for(GraphNode node  : nodes){
+            LinkedList<GraphEdge> edges = node.edges;
+
+            if(edges.isEmpty()){
+                System.out.println("Node " + node.getName() + " has no edges.");
+                continue;
+            }
+
+            System.out.print("Node " + node.getName() + " has edges to: ");
+
+            for(GraphEdge edge : edges){
+                System.out.print(edge.getEnd().getName() + "(" + edge.getWeight() + ")");
+            }
+
+            System.out.println();
+        }
+    }
+
+    public boolean hasEdge(GraphNode source, GraphNode destination){
+        LinkedList<GraphEdge> edges = source.edges;
+        for(GraphEdge edge : edges){
+            if(edge.getEnd() == destination)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void resetNodesVisited(){
+        for(GraphNode node : nodes){
+            node.unvisited();
+        }
+    }
+
+    public void DijkstraShortestPath(GraphNode start, GraphNode end) {
+
+        HashMap<GraphNode, GraphNode> changedAt = new HashMap<>();
+        changedAt.put(start, null);
+
+        // Keeps track of the shortest path we've found so far for every node
+        HashMap<GraphNode, Double> shortestPathMap = new HashMap<>();
+
+        for (GraphNode node : nodes) {
+            if (node == start)
+                shortestPathMap.put(start, 0.0);
+            else shortestPathMap.put(node, Double.POSITIVE_INFINITY);
+        }
+
+        for (GraphEdge edge : start.edges) {
+            shortestPathMap.put(edge.getEnd(), edge.getWeight());
+            changedAt.put(edge.getEnd(), start);
+        }
+
+        start.visit();
+
+        while (true) {
+            GraphNode currentNode = closestReachableUnvisited(shortestPathMap);
+            if (currentNode == null) {
+                System.out.println("There isn't a path between " + start.name + " and " + end.name);
+                return;
+            }
+
+            // If the closest non-visited node is our destination, we want to print the path
+            if (currentNode == end) {
+                System.out.println("The path with the smallest weight between "
+                        + start.name + " and " + end.name + " is:");
+
+                GraphNode child = end;
+
+                String path = end.name;
+                while (true) {
+                    GraphNode parent = changedAt.get(child);
+                    if (parent == null) {
+                        break;
+                    }
+
+                    path = parent.name + " " + path;
+                    child = parent;
+                }
+                System.out.println(path);
+                System.out.println("The path costs: " + shortestPathMap.get(end));
+                return;
+            }
+            currentNode.visit();
+
+            for (GraphEdge edge : currentNode.edges) {
+                if (edge.getEnd().isVisited())
+                    continue;
+
+                if (shortestPathMap.get(currentNode)
+                        + edge.getWeight()
+                        < shortestPathMap.get(edge.getEnd())) {
+                    shortestPathMap.put(edge.getEnd(),
+                            shortestPathMap.get(currentNode) + edge.getWeight());
+                    changedAt.put(edge.getEnd(), currentNode);
+                }
+            }
+        }
+    }
+
+    private GraphNode closestReachableUnvisited(HashMap<GraphNode, Double> shortestPathMap) {
+
+        double shortestDistance = Double.POSITIVE_INFINITY;
+        GraphNode closestReachableNode = null;
+        for (GraphNode node : nodes) {
+            if (node.isVisited())
+                continue;
+
+            double currentDistance = shortestPathMap.get(node);
+            if (currentDistance == Double.POSITIVE_INFINITY)
+                continue;
+
+            if (currentDistance < shortestDistance) {
+                shortestDistance = currentDistance;
+                closestReachableNode = node;
+            }
+        }
+        return closestReachableNode;
+    }
+
 }

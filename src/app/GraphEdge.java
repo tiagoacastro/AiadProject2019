@@ -4,40 +4,49 @@
 
 package app;
 
-public class GraphEdge {
-    private GraphNode start;
-    private GraphNode end;
-    private double weight;
-    private String id;
+public class GraphEdge implements Comparable<GraphEdge>{
 
-    public String getId() {
-        return this.id;
+    private GraphNode source;
+    private GraphNode destination;
+    private double weight;
+
+    public GraphEdge(GraphNode s, GraphNode d, double w) {
+        this.source = s;
+        this.destination = d;
+        this.weight = w;
     }
 
+    public String toString(){
+        return String.format("(%s -> %s, %f", this.source.name, this.destination.name, this.weight);
+    }
+
+
     public GraphNode getStart() {
-        return this.start;
+        return this.source;
     }
 
     public int getIdOfStartNode() {
-        return this.start.getNodeId();
+        return this.source.getNodeId();
     }
 
     public GraphNode getEnd() {
-        return this.end;
+        return this.destination;
     }
 
     public int getIdOfEndNode() {
-        return this.end.getNodeId();
+        return this.destination.getNodeId();
     }
 
+    public void setWeight(double weight) {this.weight = weight;}
     public double getWeight() {
         return this.weight;
     }
 
-    public GraphEdge(GraphNode s, GraphNode e, double w, String id) {
-        this.start = s;
-        this.end = e;
-        this.weight = w;
-        this.id = id;
+    @Override
+    public int compareTo(GraphEdge otherEdge) {
+
+        if (this.weight > otherEdge.weight)
+            return 1;
+        else return -1;
     }
 }

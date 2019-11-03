@@ -5,14 +5,43 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GraphNode {
 
     private int id;
-    private List<GraphEdge> neighbours = new ArrayList<GraphEdge>();
+    String name;
+    LinkedList<GraphEdge> edges;
     private int x;
     private int y;
+    private boolean visited;
+
+    public GraphNode(int id, String name, int x, int y) {
+        this.id = id;
+        this.name = name;
+        this.edges = new LinkedList<>();
+        this.x = x;
+        this.y = y;
+        this.visited = false;
+    }
+
+
+    public boolean isVisited(){
+        return this.visited;
+    }
+
+    public void visit(){
+        this.visited = true;
+    }
+
+    public void unvisited(){
+        this.visited = false;
+    }
+
+    public String getName(){
+        return this.name;
+    }
 
     public int getNodeId() {
 
@@ -30,27 +59,11 @@ public class GraphNode {
     }
 
     public void addNeighbour(GraphEdge e) {
-        if(this.neighbours.contains(e)) {
+        if(this.edges.contains(e)) {
             System.out.println("This edge has already been used for this node.");
         } else {
-            this.neighbours.add(e);
+            this.edges.add(e);
         }
     }
 
-    public void getNeighbours() {
-        System.out.println("List of all edges that node " + this.id +" has: ");
-        System.out.println("=================================");
-        for (int i = 0; i < this.neighbours.size(); i++ ){
-            System.out.println("ID of Edge: " + neighbours.get(i).getId() + "\nID of the first node: " + neighbours.get(i).getIdOfStartNode() +
-                    "\nID of the second node: " + neighbours.get(i).getIdOfEndNode());
-            System.out.println();
-        }
-        System.out.println(neighbours);
-    }
-
-    public GraphNode(int id, int x, int y) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-    }
 }
