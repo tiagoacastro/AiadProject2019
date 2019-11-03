@@ -33,7 +33,7 @@ public class Main {
     /*
         Graph with nodes and edges representing the roads
      */
-    private static Graph graph = new Graph();
+    private static Graph graph;
 
 
 
@@ -44,19 +44,43 @@ public class Main {
      */
     public static void main(String [] args){
 
-        parseNodesFile();
-        parseEdgesFile();
+        graph = new Graph(true);
 
-        startJADE();
+        GraphNode zero = new GraphNode(0, "0" , 1, 1);
+        GraphNode one = new GraphNode(1, "1" , 1, 1);
+        GraphNode two = new GraphNode(2, "2", 1, 1);
+        GraphNode three = new GraphNode(3, "3", 1, 1);
+        GraphNode four = new GraphNode(4, "4", 1, 1);
+        GraphNode five = new GraphNode(5, "5", 1, 1);
+        GraphNode six = new GraphNode(6, "6", 1, 1);
 
-        createAgents();
+        graph.addEdge(zero, one, 8);
+        graph.addEdge(zero, two, 11);
+        graph.addEdge(one, three, 3);
+        graph.addEdge(one, four, 8);
+        graph.addEdge(one, two, 7);
+        graph.addEdge(two, four, 9);
+        graph.addEdge(three, four, 5);
+        graph.addEdge(three, five, 2);
+        graph.addEdge(four, six, 6);
+        graph.addEdge(five, four, 1);
+        graph.addEdge(five, six, 8);
+
+        graph.DijkstraShortestPath(zero, four);
+
+        //parseNodesFile();
+        //parseEdgesFile();
+
+        //startJADE();
+
+        //createAgents();
     }
 
 
     /*
         Nodes File Parser
      */
-    private static void parseNodesFile(){
+    /*private static void parseNodesFile(){
 
 
         File nodeFile = new File("resources/my_nodes.nod.xml");
@@ -83,14 +107,14 @@ public class Main {
             int x = Integer.parseInt(eElement.getAttribute("x"));
             int y = Integer.parseInt(eElement.getAttribute("y"));
 
-            graph.createNode(new GraphNode(id, x, y));
+            graph.createNode(new GraphNode(id, eElement.getAttribute("id"), x, y));
         }
     }
 
 
-    /*
+    *//*
         Edges File Parser
-     */
+     *//*
     private static void parseEdgesFile(){
 
         File nodeFile = new File("resources/my_edges.edg.xml");
@@ -125,9 +149,9 @@ public class Main {
     }
 
 
-    /*
+    *//*
         Method that initializes JADE.
-     */
+     *//*
     private static void startJADE(){
 
         runtime = Runtime.instance();
@@ -135,9 +159,9 @@ public class Main {
     }
 
 
-    /*
+    *//*
         Method that creates all the JADE agents.
-     */
+     *//*
     private static void createAgents(){
 
         createTrafficLightsAgents();
@@ -155,9 +179,9 @@ public class Main {
     }
 
 
-    /*
+    *//*
         Method that iterates through every node of the graph and creates a TrafficLight agent in each.
-     */
+     *//*
     private static void createTrafficLightsAgents() {
 
         try {
@@ -176,9 +200,9 @@ public class Main {
     }
 
 
-    /*
+    *//*
         Method that iterates through every node of the graph and creates a Vehicles agent in each.
-     */
+     *//*
     private static void createVehiclesAgents(){
 
         try {
@@ -194,9 +218,9 @@ public class Main {
     }
 
 
-    /*
+    *//*
         Method that calculates the distance between 2 nodes
-     */
+     *//*
     private static double calculateWeight(int f, int t){
 
         int fx = graph.getNodes().get(f).getX();
@@ -204,5 +228,5 @@ public class Main {
         int tx = graph.getNodes().get(t).getX();
         int ty = graph.getNodes().get(t).getY();
         return Math.sqrt(Math.pow(tx-fx, 2) + Math.pow(ty-fy, 2));
-    }
+    }*/
 }
