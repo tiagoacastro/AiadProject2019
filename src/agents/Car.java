@@ -14,19 +14,34 @@ import java.util.Hashtable;
 
 public class Car extends Vehicle{
 
+    /*
+        Directory Facilitator Agent Description
+     */
     private DFAgentDescription template;
-
-    private int priority;
+    /*
+        Vehicle Remaining Priority Points
+     */
+    private int priorityPoints;
+    /*
+        Hashtable with the information of each Traffic Light
+     */
     private Hashtable<Integer, int[]> tlInfo;
 
 
-    public Car(int startingNode, int targetNode, int priority){
+
+
+
+    /*
+        Car Constructor
+     */
+    public Car(int startingNode, int targetNode, int priorityPoints){
 
         this.startingNode = startingNode;
         this.targetNode = targetNode;
-        this.priority = priority;
+        this.priorityPoints = priorityPoints;
         this.tlInfo = new Hashtable<>();
     }
+
 
     /*
        Method that is a placeholder for agent specific startup code.
@@ -45,7 +60,10 @@ public class Car extends Vehicle{
 
         addBehaviour(new FindTrafficLights());
         addBehaviour(new FindTrafficLightsInfo());
+
+        addBehaviour(new QueryTL());
     }
+
 
     /*
         Method that is a placeholder for agent specific cleanup code.
@@ -55,6 +73,28 @@ public class Car extends Vehicle{
 
         System.out.println("Car-agent " + agentNickname + " has terminated!");
     }
+
+
+    /*
+        Getter for a Traffic Light AID
+     */
+    private AID getTrafficLightAID(int i){
+
+        return trafficLightsAgents[i];
+    }
+
+
+    /*
+        TODO
+        Method where the agent decides how many Priority Points he is gonna use to pass in a Traffic Light
+     */
+    private int choosePriorityPoints(){
+
+        return priorityPoints;
+    }
+
+
+
 
 
     /*
@@ -151,6 +191,122 @@ public class Car extends Vehicle{
                     }
 
                     step = 2;
+            }
+        }
+
+        public boolean done(){
+
+            return (step == 2);
+        }
+    }
+
+
+    /*
+        Inner Class. Used to query a Traffic Light if can pass
+     */
+    private class QueryTL extends Behaviour{
+
+        private MessageTemplate msgTemp;
+        private int step = 0;
+
+        @Override
+        public void action(){
+
+            switch(step) {
+
+                case 0:
+
+                    ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
+                    queryMsg.addReceiver(getTrafficLightAID(1));
+
+                    queryMsg.setConversationId("query_passage");
+                    queryMsg.setReplyWith("query_passage" + System.currentTimeMillis()); // To ensure unique values
+                    myAgent.send(queryMsg);
+                    msgTemp = MessageTemplate.and(MessageTemplate.MatchConversationId("query_passage"),
+                            MessageTemplate.MatchInReplyTo(queryMsg.getReplyWith()));
+
+                    step++;
+                    break;
+
+                case 1:
+
+                    ACLMessage reply = myAgent.receive(msgTemp);
+                    if(reply != null){
+
+                        String content = reply.getContent();
+                        if(content.equals("PASS")){
+
+                            System.out.println("Carro pode passar");
+                        }
+                        else{
+
+                            addBehaviour(new Auction());
+                        }
+                        step++;
+                    }
+                    else{
+
+                        block();
+                    }
+                    break;
+            }
+
+        }
+
+        public boolean done(){
+
+            return (step == 2);
+        }
+    }
+
+
+    /*
+        Inner Class. Used when in Auction
+     */
+    private class Auction extends Behaviour{
+
+        private MessageTemplate msgTemp;
+        private int step = 0;
+
+        @Override
+        public void action(){
+
+            switch(step){
+
+                case 0:
+
+                    ACLMessage proposalMsg = new ACLMessage(ACLMessage.PROPOSE);
+                    proposalMsg.addReceiver(getTrafficLightAID(1));
+                    proposalMsg.setConversationId("auction");
+                    proposalMsg.setReplyWith("auction" + System.currentTimeMillis()); // To ensure unique values
+                    proposalMsg.setContent(String.valueOf(choosePriorityPoints()));
+                    myAgent.send(proposalMsg);
+                    msgTemp = MessageTemplate.and(MessageTemplate.MatchConversationId("auction"),
+                            MessageTemplate.MatchInReplyTo(proposalMsg.getReplyWith()));
+
+                    step++;
+                    break;
+
+                case 1:
+
+                    ACLMessage reply = myAgent.receive(msgTemp);
+                    if(reply != null){
+
+                        if(reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+
+                            System.out.println("Proposta aceite. Carro pode passar");
+                        }
+                        else if(reply.getPerformative() == ACLMessage.REJECT_PROPOSAL){
+
+                            System.out.println("Proposta NAO aceite. Carro NAO pode passar");
+                        }
+                        step++;
+                    }
+                    else{
+
+                        block();
+                    }
+                    break;
             }
         }
 

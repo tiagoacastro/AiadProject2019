@@ -33,7 +33,6 @@ public class GraphNode {
         if(this.neighbours.contains(e)) {
             System.out.println("This edge has already been used for this node.");
         } else {
-            System.out.println("Successfully added " + e);
             this.neighbours.add(e);
         }
     }

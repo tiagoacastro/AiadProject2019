@@ -14,23 +14,33 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.lang.Math;
 
 
 public class Main {
 
+    /*
+        Runtime instance of JADE
+     */
     private static Runtime runtime;
+    /*
+        Main container where the agents are
+     */
     private static ContainerController mainContainer;
+    /*
+        Graph with nodes and edges representing the roads
+     */
     private static Graph graph = new Graph();
 
-    private static int numberCars;
+
+
 
 
     /*
-        Main function.
+        Main
      */
     public static void main(String [] args){
 
@@ -107,14 +117,10 @@ public class Main {
             String id = eElement.getAttribute("id");
             int fromID = Integer.parseInt(eElement.getAttribute("from"));
             int toID = Integer.parseInt(eElement.getAttribute("to"));
+            double weight = calculateWeight(fromID, toID);
 
-            GraphEdge tempEdge = new GraphEdge(graph.getNodes().get(fromID), graph.getNodes().get(toID), 0, id);
+            GraphEdge tempEdge = new GraphEdge(graph.getNodes().get(fromID), graph.getNodes().get(toID), weight, id);
             graph.getNodes().get(fromID).addNeighbour(tempEdge);
-        }
-
-        for(int i = 0; i < graph.getNodes().size(); i++){
-
-            graph.getNodes().get(i).getNeighbours();
         }
     }
 
@@ -185,5 +191,18 @@ public class Main {
 
             spException.printStackTrace();
         }
+    }
+
+
+    /*
+        Method that calculates the distance between 2 nodes
+     */
+    private static double calculateWeight(int f, int t){
+
+        int fx = graph.getNodes().get(f).getX();
+        int fy = graph.getNodes().get(f).getY();
+        int tx = graph.getNodes().get(t).getX();
+        int ty = graph.getNodes().get(t).getY();
+        return Math.sqrt(Math.pow(tx-fx, 2) + Math.pow(ty-fy, 2));
     }
 }

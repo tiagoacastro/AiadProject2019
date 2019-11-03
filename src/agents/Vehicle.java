@@ -10,21 +10,21 @@ public abstract class Vehicle extends Agent {
         Vehicle agent nickname.
      */
     public String agentNickname;
-
     /*
         Vehicle known traffic lights.
      */
     public AID[] trafficLightsAgents;
-
     /*
         Vehicle starting node.
      */
     public int startingNode;
-
     /*
         Vehicle target node.
      */
     public int targetNode;
+
+
+
 
 
     /*
