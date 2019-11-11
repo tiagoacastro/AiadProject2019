@@ -7,7 +7,6 @@ package app;
 import java.util.*;
 
 public class Graph {
-
     public static ArrayList<GraphNode> nodes = new ArrayList<>();
     public static boolean directed;
 
@@ -74,7 +73,6 @@ public class Graph {
     }
 
     public static void DijkstraShortestPath(GraphNode start, GraphNode end) {
-
         HashMap<GraphNode, GraphNode> changedAt = new HashMap<>();
         changedAt.put(start, null);
 
@@ -140,9 +138,9 @@ public class Graph {
     }
 
     private static GraphNode closestReachableUnvisited(HashMap<GraphNode, Double> shortestPathMap) {
-
         double shortestDistance = Double.POSITIVE_INFINITY;
         GraphNode closestReachableNode = null;
+
         for (GraphNode node : nodes) {
             if (node.isVisited())
                 continue;

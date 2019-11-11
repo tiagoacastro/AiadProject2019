@@ -13,7 +13,6 @@ import java.util.Hashtable;
 
 
 public class Car extends Vehicle{
-
     /*
         Directory Facilitator Agent Description
      */
@@ -26,10 +25,6 @@ public class Car extends Vehicle{
         Hashtable with the information of each Traffic Light
      */
     private Hashtable<Integer, int[]> tlInfo;
-
-
-
-
 
     /*
         Car Constructor
@@ -64,7 +59,6 @@ public class Car extends Vehicle{
         addBehaviour(new QueryTL());
     }
 
-
     /*
         Method that is a placeholder for agent specific cleanup code.
      */
@@ -74,7 +68,6 @@ public class Car extends Vehicle{
         System.out.println("Car-agent " + agentNickname + " has terminated!");
     }
 
-
     /*
         Getter for a Traffic Light AID
      */
@@ -82,7 +75,6 @@ public class Car extends Vehicle{
 
         return trafficLightsAgents[i];
     }
-
 
     /*
         TODO
@@ -92,10 +84,6 @@ public class Car extends Vehicle{
 
         return priorityPoints;
     }
-
-
-
-
 
     /*
         Inner Class. Used to find all the traffic lights
@@ -142,11 +130,8 @@ public class Car extends Vehicle{
 
         @Override
         public void action() {
-
             switch(step){
-
                 case 0:             // Send REQUEST for tl info
-
                     ACLMessage requestInfo = new ACLMessage(ACLMessage.REQUEST);
                     for (AID trafficLightsAgent : trafficLightsAgents) {
 
@@ -160,12 +145,9 @@ public class Car extends Vehicle{
 
                     step = 1;
                     break;
-
                 case 1:             // Receive INFORM for tl info
-
                     int i = 0;
                     while(i < trafficLightsAgents.length){
-
                         ACLMessage reply = myAgent.receive(msgTemp);
                         if(reply != null){
 
@@ -200,12 +182,10 @@ public class Car extends Vehicle{
         }
     }
 
-
     /*
         Inner Class. Used to query a Traffic Light if can pass
      */
     private class QueryTL extends Behaviour{
-
         private MessageTemplate msgTemp;
         private int step = 0;
 
@@ -213,9 +193,7 @@ public class Car extends Vehicle{
         public void action(){
 
             switch(step) {
-
                 case 0:
-
                     ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
                     queryMsg.addReceiver(getTrafficLightAID(1));
 
@@ -229,7 +207,6 @@ public class Car extends Vehicle{
                     break;
 
                 case 1:
-
                     ACLMessage reply = myAgent.receive(msgTemp);
                     if(reply != null){
 
@@ -245,7 +222,6 @@ public class Car extends Vehicle{
                         step++;
                     }
                     else{
-
                         block();
                     }
                     break;
@@ -254,27 +230,21 @@ public class Car extends Vehicle{
         }
 
         public boolean done(){
-
             return (step == 2);
         }
     }
-
 
     /*
         Inner Class. Used when in Auction
      */
     private class Auction extends Behaviour{
-
         private MessageTemplate msgTemp;
         private int step = 0;
 
         @Override
         public void action(){
-
             switch(step){
-
                 case 0:
-
                     ACLMessage proposalMsg = new ACLMessage(ACLMessage.PROPOSE);
                     proposalMsg.addReceiver(getTrafficLightAID(1));
                     proposalMsg.setConversationId("auction");
@@ -286,24 +256,18 @@ public class Car extends Vehicle{
 
                     step++;
                     break;
-
                 case 1:
-
                     ACLMessage reply = myAgent.receive(msgTemp);
                     if(reply != null){
-
                         if(reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
-
                             System.out.println("Proposta aceite. Carro pode passar");
                         }
                         else if(reply.getPerformative() == ACLMessage.REJECT_PROPOSAL){
-
                             System.out.println("Proposta NAO aceite. Carro NAO pode passar");
                         }
                         step++;
                     }
                     else{
-
                         block();
                     }
                     break;
@@ -311,7 +275,6 @@ public class Car extends Vehicle{
         }
 
         public boolean done(){
-
             return (step == 2);
         }
     }

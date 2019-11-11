@@ -12,7 +12,6 @@ import jade.lang.acl.MessageTemplate;
 
 
 public class TrafficLight extends Agent {
-
     /*
         TrafficLight agent nickname
      */
@@ -26,10 +25,6 @@ public class TrafficLight extends Agent {
      */
     private int y;
 
-
-
-
-
     /*
         Car Constructor
      */
@@ -38,7 +33,6 @@ public class TrafficLight extends Agent {
         this.x = x;
         this.y = y;
     }
-
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -56,7 +50,6 @@ public class TrafficLight extends Agent {
         addBehaviour(new ListenToVehicles());
     }
 
-
     /*
         Method that is a placeholder for agent specific cleanup code.
      */
@@ -64,7 +57,6 @@ public class TrafficLight extends Agent {
 
         System.out.println("TrafficLight-agent " + agentNickname + " has terminated!");
     }
-
 
     /*
         Method that takes care of the Traffic Light's registration in the yellow pages.
@@ -87,7 +79,6 @@ public class TrafficLight extends Agent {
         }
     }
 
-
     /*
         TODO
         Method that checks if a car can pass
@@ -96,10 +87,6 @@ public class TrafficLight extends Agent {
 
         return false;
     }
-
-
-
-
 
     /*
         Inner Class. Used to give the own Traffic Light information
@@ -132,7 +119,6 @@ public class TrafficLight extends Agent {
             return done;
         }
     }
-
 
     /*
         Inner Class. Used to always be listening to vehicles QUERY messages
@@ -167,7 +153,6 @@ public class TrafficLight extends Agent {
             }
         }
     }
-
 
     /*
         Inner Class. Used when in auction

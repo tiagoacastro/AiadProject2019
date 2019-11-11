@@ -4,12 +4,9 @@
 
 package app;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class GraphNode {
-
     private int id;
     String name;
     LinkedList<GraphEdge> edges;
@@ -25,7 +22,6 @@ public class GraphNode {
         this.y = y;
         this.visited = false;
     }
-
 
     public boolean isVisited(){
         return this.visited;
@@ -44,17 +40,14 @@ public class GraphNode {
     }
 
     public int getNodeId() {
-
         return this.id;
     }
 
     public int getX(){
-
         return this.x;
     }
 
     public int getY(){
-
         return this.y;
     }
 

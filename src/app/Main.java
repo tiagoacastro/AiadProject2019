@@ -60,8 +60,6 @@ public class Main {
         Nodes File Parser
      */
     /*private static void parseNodesFile(){
-
-
         File nodeFile = new File("resources/my_nodes.nod.xml");
         Document doc = null;
 
@@ -95,7 +93,6 @@ public class Main {
         Edges File Parser
      *//*
     private static void parseEdgesFile(){
-
         File nodeFile = new File("resources/my_edges.edg.xml");
         Document doc = null;
 
@@ -132,7 +129,6 @@ public class Main {
     Method that initializes JADE.
     */
     private static void startJADE(){
-
         runtime = Runtime.instance();
         mainContainer = runtime.createMainContainer(new ProfileImpl());
     }
@@ -142,7 +138,6 @@ public class Main {
         Method that creates all the JADE agents.
      */
     private static void createAgents(){
-
         createTrafficLightsAgents();
 
         try
@@ -162,7 +157,6 @@ public class Main {
         Method that iterates through every node of the graph and creates a TrafficLight agent in each.
     */
     private static void createTrafficLightsAgents() {
-
         try {
 
             for (int i = 0; i < Graph.nodes.size(); i++) {
@@ -183,7 +177,6 @@ public class Main {
         Method that iterates through every node of the graph and creates a Vehicles agent in each.
     */
     private static void createVehiclesAgents(){
-
         try {
 
             Car carAgent = new Car(0, 9, 100);
@@ -201,7 +194,6 @@ public class Main {
         Method that calculates the distance between 2 nodes
     */
     private static double calculateWeight(int f, int t){
-
         int fx = Graph.nodes.get(f).getX();
         int fy = Graph.nodes.get(f).getY();
         int tx = Graph.nodes.get(t).getX();

@@ -5,7 +5,6 @@ import jade.core.AID;
 
 
 public abstract class Vehicle extends Agent {
-
     /*
         Vehicle agent nickname.
      */
@@ -23,15 +22,10 @@ public abstract class Vehicle extends Agent {
      */
     public int targetNode;
 
-
-
-
-
     /*
         Method that is a placeholder for agent specific startup code.
      */
     protected abstract void setup();
-
 
     /*
         Method that is a placeholder for agent specific cleanup code.
