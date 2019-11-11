@@ -1,5 +1,6 @@
 package agents;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
@@ -11,18 +12,13 @@ import jade.lang.acl.MessageTemplate;
 
 
 public class TrafficLight extends Agent {
-    /*
-        TrafficLight agent nickname
-     */
-    private String agentNickname;
+    private AID aid;
 
     /*
         Method that is a placeholder for agent specific startup code.
      */
     protected void setup(){
-
-        int pos = getAID().getName().indexOf("@");
-        agentNickname = getAID().getName().substring(0, pos);
+        this.aid = getAID();
 
         registerYellowPages();
 
@@ -34,7 +30,11 @@ public class TrafficLight extends Agent {
      */
     protected void takeDown(){
 
-        System.out.println("TrafficLight-agent " + agentNickname + " has terminated!");
+        System.out.println("TrafficLight-agent has terminated!");
+    }
+
+    public AID getAid(){
+        return this.aid;
     }
 
     /*
