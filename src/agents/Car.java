@@ -46,17 +46,17 @@ public class Car extends Vehicle{
 
         int pos = getAID().getName().indexOf("@");
         agentNickname = getAID().getName().substring(0, pos);
-        System.out.println("Car-agent " + agentNickname + " has started!");
 
         template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
         sd.setType("communication_car_tl");
         template.addServices(sd);
-
+        /*
         addBehaviour(new FindTrafficLights());
         addBehaviour(new FindTrafficLightsInfo());
 
         addBehaviour(new QueryTL());
+        */
     }
 
     /*

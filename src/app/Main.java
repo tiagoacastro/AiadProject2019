@@ -12,12 +12,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import sun.nio.ch.ThreadPool;
+
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.lang.Math;
+import java.util.concurrent.*;
 
 
 public class Main {
@@ -42,6 +45,9 @@ public class Main {
         startJADE();
 
         createAgents();
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(new Map(), 0, 1, TimeUnit.SECONDS);
     }
 
 

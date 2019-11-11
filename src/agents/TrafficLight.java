@@ -24,7 +24,6 @@ public class TrafficLight extends Agent {
 
         int pos = getAID().getName().indexOf("@");
         agentNickname = getAID().getName().substring(0, pos);
-        System.out.println("TrafficLight-agent " + agentNickname + " has started!");
 
         registerYellowPages();
 

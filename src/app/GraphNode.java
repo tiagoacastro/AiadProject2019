@@ -72,5 +72,7 @@ public class GraphNode {
 
     public void addTl(TrafficLight tl){
         this.tl = tl;
+        Map.originalMap[y][x] = 'O';
+        Map.map[y][x] = 'O';
     }
 }
