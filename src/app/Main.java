@@ -147,12 +147,12 @@ public class Main {
     */
     private static void createTrafficLightsAgents() {
         try {
-
-            for (int i = 0; i < Graph.nodes.size(); i++) {
-
-                TrafficLight tlAgent = new TrafficLight(Graph.nodes.get(i).getX(), Graph.nodes.get(i).getY());
-                AgentController ac = mainContainer.acceptNewAgent("tl" + i, tlAgent);
-                ac.start();
+            for (GraphNode node : Graph.nodes) {
+                if(node.numberOfEdgesIn() >= 2){
+                    TrafficLight tlAgent = new TrafficLight(node.getX(), node.getY());
+                    AgentController ac = mainContainer.acceptNewAgent("tl" + node.getNodeId(), tlAgent);
+                    ac.start();
+                }
             }
         }
         catch(StaleProxyException spException){

@@ -48,4 +48,8 @@ public class GraphEdge implements Comparable<GraphEdge>{
             return 1;
         else return -1;
     }
+
+    public boolean isDestination(GraphNode node){
+        return source == node;
+    }
 }

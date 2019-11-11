@@ -59,4 +59,12 @@ public class GraphNode {
         }
     }
 
+    public int numberOfEdgesIn(){
+        int n = 0;
+        for(GraphEdge edge : edges){
+            if(edge.isDestination(this))
+                n++;
+        }
+        return n;
+    }
 }
