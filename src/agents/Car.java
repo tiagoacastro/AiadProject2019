@@ -1,8 +1,13 @@
 package agents;
 
+import app.Graph;
+import app.GraphNode;
+
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
+
+import java.util.HashMap;
 
 
 public class Car extends Vehicle{
@@ -14,12 +19,14 @@ public class Car extends Vehicle{
     /*
         Car Constructor
      */
-    public Car(int startingNode, int targetNode, int priorityPoints){
+    public Car(GraphNode startingNode, GraphNode targetNode, int priorityPoints){
+
         this.startingNode = startingNode;
         this.targetNode = targetNode;
         this.priorityPoints = priorityPoints;
+        this.path = new HashMap<>();
 
-        //TODO: implement djikstra
+        definePath();
     }
 
     /*
@@ -44,6 +51,22 @@ public class Car extends Vehicle{
      */
     private int choosePriorityPoints(){
         return priorityPoints;
+    }
+
+    private void definePath(){
+
+        String pathString = Graph.DijkstraShortestPath(startingNode, targetNode);
+        int pos = pathString.indexOf(" ");
+        int counter = 0;
+        while(pos != -1){
+
+            String subString = pathString.substring(0, pos);
+            this.path.put(counter, Graph.nodes.get(Integer.parseInt(subString)));
+            counter++;
+            pathString = pathString.substring(pos+1, pathString.length());
+            pos = pathString.indexOf(" ");
+        }
+        this.path.put(counter, Graph.nodes.get(Integer.parseInt(pathString)));
     }
 
     private class Decide extends TickerBehaviour {

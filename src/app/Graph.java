@@ -14,10 +14,16 @@ public class Graph {
         Graph.directed = true;
 
         GraphNode zero = new GraphNode(0, "0" , 0, 5);
+        Graph.addNode(zero);
         GraphNode one = new GraphNode(1, "1" , 5, 0);
+        Graph.addNode(one);
         GraphNode two = new GraphNode(2, "2", 5, 5);
+        Graph.addNode(two);
         GraphNode three = new GraphNode(3, "3", 5, 10);
+        Graph.addNode(three);
         GraphNode four = new GraphNode(4, "4", 10, 5);
+        Graph.addNode(four);
+
 
         Graph.addEdge(zero, two, 5);
         Graph.addEdge(one, two, 5);
@@ -30,11 +36,6 @@ public class Graph {
     }
 
     public static void addEdge(GraphNode source, GraphNode destination, double weight){
-        if(!nodes.contains(source))
-            nodes.add(source);
-        if(!nodes.contains(destination))
-            nodes.add(destination);
-
         addEdgeHelper(source, destination, weight);
 
         if(!directed && source != destination){
@@ -89,7 +90,7 @@ public class Graph {
         }
     }
 
-    public static void DijkstraShortestPath(GraphNode start, GraphNode end) {
+    public static String DijkstraShortestPath(GraphNode start, GraphNode end) {
         HashMap<GraphNode, GraphNode> changedAt = new HashMap<>();
         changedAt.put(start, null);
 
@@ -113,13 +114,11 @@ public class Graph {
             GraphNode currentNode = closestReachableUnvisited(shortestPathMap);
             if (currentNode == null) {
                 System.out.println("There isn't a path between " + start.name + " and " + end.name);
-                return;
+                return null;
             }
 
             // If the closest non-visited node is our destination, we want to print the path
             if (currentNode == end) {
-                System.out.println("The path with the smallest weight between "
-                        + start.name + " and " + end.name + " is:");
 
                 GraphNode child = end;
 
@@ -133,9 +132,7 @@ public class Graph {
                     path = parent.name + " " + path;
                     child = parent;
                 }
-                System.out.println(path);
-                System.out.println("The path costs: " + shortestPathMap.get(end));
-                return;
+                return path;
             }
             currentNode.visit();
 
