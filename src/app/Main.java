@@ -149,7 +149,8 @@ public class Main {
         try {
             for (GraphNode node : Graph.nodes) {
                 if(node.numberOfEdgesIn() >= 2){
-                    TrafficLight tlAgent = new TrafficLight(node.getX(), node.getY());
+                    TrafficLight tlAgent = new TrafficLight();
+                    node.addTl(tlAgent);
                     AgentController ac = mainContainer.acceptNewAgent("tl" + node.getNodeId(), tlAgent);
                     ac.start();
                 }

@@ -5,6 +5,7 @@
 package app;
 
 import java.util.LinkedList;
+import agents.TrafficLight;
 
 public class GraphNode {
     private int id;
@@ -13,6 +14,7 @@ public class GraphNode {
     private int x;
     private int y;
     private boolean visited;
+    private TrafficLight tl;
 
     public GraphNode(int id, String name, int x, int y) {
         this.id = id;
@@ -66,5 +68,9 @@ public class GraphNode {
                 n++;
         }
         return n;
+    }
+
+    public void addTl(TrafficLight tl){
+        this.tl = tl;
     }
 }

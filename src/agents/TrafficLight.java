@@ -16,23 +16,6 @@ public class TrafficLight extends Agent {
         TrafficLight agent nickname
      */
     private String agentNickname;
-    /*
-        TrafficLight x position
-     */
-    private int x;
-    /*
-        TrafficLight y position
-     */
-    private int y;
-
-    /*
-        Car Constructor
-     */
-    public TrafficLight(int x, int y){
-
-        this.x = x;
-        this.y = y;
-    }
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -107,7 +90,7 @@ public class TrafficLight extends Agent {
 
             ACLMessage reply = msg.createReply();
             reply.setPerformative(ACLMessage.INFORM);
-            String tlInfo = agentNickname + " " + x + " " + y;
+            String tlInfo = agentNickname;
             reply.setContent(tlInfo);
             myAgent.send(reply);
 
