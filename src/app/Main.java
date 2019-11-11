@@ -34,18 +34,7 @@ public class Main {
         Main
      */
     public static void main(String [] args){
-        Graph.directed = true;
-
-        GraphNode zero = new GraphNode(0, "0" , 0, 5);
-        GraphNode one = new GraphNode(1, "1" , 5, 0);
-        GraphNode two = new GraphNode(2, "2", 5, 5);
-        GraphNode three = new GraphNode(3, "3", 5, 10);
-        GraphNode four = new GraphNode(4, "4", 10, 5);
-
-        Graph.addEdge(zero, two, 5);
-        Graph.addEdge(one, two, 5);
-        Graph.addEdge(two, three, 5);
-        Graph.addEdge(two, four, 5);
+        Graph.construct();
 
         //parseNodesFile();
         //parseEdgesFile();
