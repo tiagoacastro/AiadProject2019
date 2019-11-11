@@ -21,7 +21,6 @@ import java.lang.Math;
 
 
 public class Main {
-
     /*
         Runtime instance of JADE
      */
@@ -35,10 +34,6 @@ public class Main {
      */
     private static Graph graph;
 
-
-
-
-
     /*
         Main
      */
@@ -46,25 +41,16 @@ public class Main {
 
         graph = new Graph(true);
 
-        GraphNode zero = new GraphNode(0, "0" , 1, 1);
-        GraphNode one = new GraphNode(1, "1" , 1, 1);
-        GraphNode two = new GraphNode(2, "2", 1, 1);
-        GraphNode three = new GraphNode(3, "3", 1, 1);
-        GraphNode four = new GraphNode(4, "4", 1, 1);
-        GraphNode five = new GraphNode(5, "5", 1, 1);
-        GraphNode six = new GraphNode(6, "6", 1, 1);
+        GraphNode zero = new GraphNode(0, "0" , 0, 5);
+        GraphNode one = new GraphNode(1, "1" , 5, 0);
+        GraphNode two = new GraphNode(2, "2", 5, 5);
+        GraphNode three = new GraphNode(3, "3", 5, 10);
+        GraphNode four = new GraphNode(4, "4", 10, 5);
 
-        graph.addEdge(zero, one, 8);
-        graph.addEdge(zero, two, 11);
-        graph.addEdge(one, three, 3);
-        graph.addEdge(one, four, 8);
-        graph.addEdge(one, two, 7);
-        graph.addEdge(two, four, 9);
-        graph.addEdge(three, four, 5);
-        graph.addEdge(three, five, 2);
-        graph.addEdge(four, six, 6);
-        graph.addEdge(five, four, 1);
-        graph.addEdge(five, six, 8);
+        graph.addEdge(zero, two, 5);
+        graph.addEdge(one, two, 5);
+        graph.addEdge(two, three, 5);
+        graph.addEdge(two, four, 5);
 
         graph.DijkstraShortestPath(zero, four);
 
