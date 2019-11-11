@@ -29,17 +29,12 @@ public class Main {
         Main container where the agents are
      */
     private static ContainerController mainContainer;
-    /*
-        Graph with nodes and edges representing the roads
-     */
-    private static Graph graph;
 
     /*
         Main
      */
     public static void main(String [] args){
-
-        graph = new Graph(true);
+        Graph.directed = true;
 
         GraphNode zero = new GraphNode(0, "0" , 0, 5);
         GraphNode one = new GraphNode(1, "1" , 5, 0);
@@ -47,19 +42,17 @@ public class Main {
         GraphNode three = new GraphNode(3, "3", 5, 10);
         GraphNode four = new GraphNode(4, "4", 10, 5);
 
-        graph.addEdge(zero, two, 5);
-        graph.addEdge(one, two, 5);
-        graph.addEdge(two, three, 5);
-        graph.addEdge(two, four, 5);
-
-        graph.DijkstraShortestPath(zero, four);
+        Graph.addEdge(zero, two, 5);
+        Graph.addEdge(one, two, 5);
+        Graph.addEdge(two, three, 5);
+        Graph.addEdge(two, four, 5);
 
         //parseNodesFile();
         //parseEdgesFile();
 
-        //startJADE();
+        startJADE();
 
-        //createAgents();
+        createAgents();
     }
 
 
@@ -136,8 +129,8 @@ public class Main {
 
 
     *//*
-        Method that initializes JADE.
-     *//*
+    Method that initializes JADE.
+    */
     private static void startJADE(){
 
         runtime = Runtime.instance();
@@ -145,9 +138,9 @@ public class Main {
     }
 
 
-    *//*
+    /*
         Method that creates all the JADE agents.
-     *//*
+     */
     private static void createAgents(){
 
         createTrafficLightsAgents();
@@ -165,16 +158,16 @@ public class Main {
     }
 
 
-    *//*
+    /*
         Method that iterates through every node of the graph and creates a TrafficLight agent in each.
-     *//*
+    */
     private static void createTrafficLightsAgents() {
 
         try {
 
-            for (int i = 0; i < graph.getNodes().size(); i++) {
+            for (int i = 0; i < Graph.nodes.size(); i++) {
 
-                TrafficLight tlAgent = new TrafficLight(graph.getNodes().get(i).getX(), graph.getNodes().get(i).getY());
+                TrafficLight tlAgent = new TrafficLight(Graph.nodes.get(i).getX(), Graph.nodes.get(i).getY());
                 AgentController ac = mainContainer.acceptNewAgent("tl" + i, tlAgent);
                 ac.start();
             }
@@ -186,9 +179,9 @@ public class Main {
     }
 
 
-    *//*
+    /*
         Method that iterates through every node of the graph and creates a Vehicles agent in each.
-     *//*
+    */
     private static void createVehiclesAgents(){
 
         try {
@@ -204,15 +197,15 @@ public class Main {
     }
 
 
-    *//*
+    /*
         Method that calculates the distance between 2 nodes
-     *//*
+    */
     private static double calculateWeight(int f, int t){
 
-        int fx = graph.getNodes().get(f).getX();
-        int fy = graph.getNodes().get(f).getY();
-        int tx = graph.getNodes().get(t).getX();
-        int ty = graph.getNodes().get(t).getY();
+        int fx = Graph.nodes.get(f).getX();
+        int fy = Graph.nodes.get(f).getY();
+        int tx = Graph.nodes.get(t).getX();
+        int ty = Graph.nodes.get(t).getY();
         return Math.sqrt(Math.pow(tx-fx, 2) + Math.pow(ty-fy, 2));
-    }*/
+    }
 }

@@ -8,19 +8,14 @@ import java.util.*;
 
 public class Graph {
 
-    private Set<GraphNode> nodes;
-    private boolean directed;
+    public static ArrayList<GraphNode> nodes = new ArrayList<>();
+    public static boolean directed;
 
-    public Graph (boolean directed){
-        this.directed = directed;
-        nodes = new HashSet<>();
-    }
-
-    public void addNode(GraphNode... node){
+    public static void addNode(GraphNode... node){
         nodes.addAll(Arrays.asList(node));
     }
 
-    public void addEdge(GraphNode source, GraphNode destination, double weight){
+    public static void addEdge(GraphNode source, GraphNode destination, double weight){
         nodes.add(source);
         nodes.add(destination);
 
@@ -32,7 +27,7 @@ public class Graph {
 
     }
 
-    public void addEdgeHelper(GraphNode n1, GraphNode n2, double weight){
+    public static void addEdgeHelper(GraphNode n1, GraphNode n2, double weight){
         for (GraphEdge edge: n1.edges){
             if(edge.getStart() == n1 && edge.getEnd() == n2){
                 edge.setWeight(weight);
@@ -43,7 +38,7 @@ public class Graph {
         n1.edges.add(new GraphEdge(n1, n2, weight));
     }
 
-    public void printEdges(){
+    public static void printEdges(){
         for(GraphNode node  : nodes){
             LinkedList<GraphEdge> edges = node.edges;
 
@@ -62,7 +57,7 @@ public class Graph {
         }
     }
 
-    public boolean hasEdge(GraphNode source, GraphNode destination){
+    public static boolean hasEdge(GraphNode source, GraphNode destination){
         LinkedList<GraphEdge> edges = source.edges;
         for(GraphEdge edge : edges){
             if(edge.getEnd() == destination)
@@ -72,13 +67,13 @@ public class Graph {
         return false;
     }
 
-    public void resetNodesVisited(){
+    public static void resetNodesVisited(){
         for(GraphNode node : nodes){
             node.unvisited();
         }
     }
 
-    public void DijkstraShortestPath(GraphNode start, GraphNode end) {
+    public static void DijkstraShortestPath(GraphNode start, GraphNode end) {
 
         HashMap<GraphNode, GraphNode> changedAt = new HashMap<>();
         changedAt.put(start, null);
@@ -144,7 +139,7 @@ public class Graph {
         }
     }
 
-    private GraphNode closestReachableUnvisited(HashMap<GraphNode, Double> shortestPathMap) {
+    private static GraphNode closestReachableUnvisited(HashMap<GraphNode, Double> shortestPathMap) {
 
         double shortestDistance = Double.POSITIVE_INFINITY;
         GraphNode closestReachableNode = null;
@@ -163,5 +158,4 @@ public class Graph {
         }
         return closestReachableNode;
     }
-
 }
