@@ -30,8 +30,10 @@ public class Graph {
     }
 
     public static void addEdge(GraphNode source, GraphNode destination, double weight){
-        nodes.add(source);
-        nodes.add(destination);
+        if(!nodes.contains(source))
+            nodes.add(source);
+        if(!nodes.contains(destination))
+            nodes.add(destination);
 
         addEdgeHelper(source, destination, weight);
 

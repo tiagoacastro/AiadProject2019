@@ -1,6 +1,8 @@
 package agents;
 
+import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.TickerBehaviour;
 
 
 public class Car extends Vehicle{
@@ -25,7 +27,7 @@ public class Car extends Vehicle{
      */
     @Override
     protected void setup(){
-        addBehaviour(new Decide());
+        addBehaviour(new Decide(this, 1000));
     }
 
     /*
@@ -44,10 +46,21 @@ public class Car extends Vehicle{
         return priorityPoints;
     }
 
-    private class Decide extends Behaviour {
+    private class Decide extends TickerBehaviour {
+        Decide(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+            //TODO: Decide entre: andar, esperar na fila, auction
+        }
+    }
+
+    private class Move extends Behaviour {
         @Override
         public void action(){
-            //TODO: Decide entre: andar, esperar na fila, auction
+            //TODO mover
         }
 
         public boolean done(){
@@ -55,58 +68,16 @@ public class Car extends Vehicle{
         }
     }
 
-    /*
-        Inner Class. Used to query a Traffic Light if can pass
-     *//*
-    private class QueryTL extends Behaviour{
-        private MessageTemplate msgTemp;
-        private int step = 0;
-
+    private class Wait extends Behaviour {
         @Override
         public void action(){
-
-            switch(step) {
-                case 0:
-                    ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
-                    queryMsg.addReceiver(getTrafficLightAID(1));
-
-                    queryMsg.setConversationId("query_passage");
-                    queryMsg.setReplyWith("query_passage" + System.currentTimeMillis()); // To ensure unique values
-                    myAgent.send(queryMsg);
-                    msgTemp = MessageTemplate.and(MessageTemplate.MatchConversationId("query_passage"),
-                            MessageTemplate.MatchInReplyTo(queryMsg.getReplyWith()));
-
-                    step++;
-                    break;
-
-                case 1:
-                    ACLMessage reply = myAgent.receive(msgTemp);
-                    if(reply != null){
-
-                        String content = reply.getContent();
-                        if(content.equals("PASS")){
-
-                            System.out.println("Carro pode passar");
-                        }
-                        else{
-
-                            addBehaviour(new Auction());
-                        }
-                        step++;
-                    }
-                    else{
-                        block();
-                    }
-                    break;
-            }
-
+            //TODO parado a ouvir à espera de auction
         }
 
         public boolean done(){
-            return (step == 2);
+            return false;
         }
     }
-    */
 
     /*
         Inner Class. Used when in Auction

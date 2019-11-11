@@ -22,7 +22,7 @@ public class TrafficLight extends Agent {
 
         registerYellowPages();
 
-        addBehaviour(new ListenToVehicles());
+        addBehaviour(new Listen());
     }
 
     /*
@@ -61,7 +61,7 @@ public class TrafficLight extends Agent {
     /*
         Inner Class. Used to always be listening to vehicles QUERY messages
      */
-    private class ListenToVehicles extends CyclicBehaviour {
+    private class Listen extends CyclicBehaviour {
         @Override
         public void action(){
             MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF);
@@ -72,7 +72,6 @@ public class TrafficLight extends Agent {
                 reply.setPerformative(ACLMessage.INFORM);*/
 
                 //TODO: guardar informação do veiculo
-
             }
             else{
                 block();
