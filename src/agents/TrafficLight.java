@@ -1,7 +1,6 @@
 package agents;
 
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -26,8 +25,6 @@ public class TrafficLight extends Agent {
         agentNickname = getAID().getName().substring(0, pos);
 
         registerYellowPages();
-
-        addBehaviour(new GiveTrafficLightInfo());
 
         addBehaviour(new ListenToVehicles());
     }
@@ -62,75 +59,22 @@ public class TrafficLight extends Agent {
     }
 
     /*
-        TODO
-        Method that checks if a car can pass
-     */
-    private boolean vehicleCanPass(){
-
-        return false;
-    }
-
-    /*
-        Inner Class. Used to give the own Traffic Light information
-     */
-    private class GiveTrafficLightInfo extends Behaviour{
-
-        private boolean done = false;
-
-        @Override
-        public void action() {
-
-            MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-            ACLMessage msg = myAgent.receive(msgTemp);
-            while(msg == null){
-
-                msg = myAgent.receive(msgTemp);
-            }
-
-            ACLMessage reply = msg.createReply();
-            reply.setPerformative(ACLMessage.INFORM);
-            String tlInfo = agentNickname;
-            reply.setContent(tlInfo);
-            myAgent.send(reply);
-
-            done = true;
-        }
-
-        public boolean done(){
-
-            return done;
-        }
-    }
-
-    /*
         Inner Class. Used to always be listening to vehicles QUERY messages
      */
     private class ListenToVehicles extends CyclicBehaviour {
-
         @Override
         public void action(){
-
             MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF);
             ACLMessage msg = myAgent.receive(msgTemp);
+
             if(msg != null){
+                /*ACLMessage reply = msg.createReply();
+                reply.setPerformative(ACLMessage.INFORM);*/
 
-                ACLMessage reply = msg.createReply();
-                reply.setPerformative(ACLMessage.INFORM);
-                String pass;
+                //TODO: guardar informação do veiculo
 
-                if(vehicleCanPass()){
-                    pass = "PASS";
-                }
-                else{
-
-                    pass = "CANT_PASS";
-                    reply.setContent(pass);
-                    myAgent.send(reply);
-                    addBehaviour(new Auction());
-                }
             }
             else{
-
                 block();
             }
         }
@@ -138,7 +82,7 @@ public class TrafficLight extends Agent {
 
     /*
         Inner Class. Used when in auction
-     */
+    *//*
     private class Auction extends Behaviour{
 
         private MessageTemplate msgTemp;
@@ -174,4 +118,5 @@ public class TrafficLight extends Agent {
             return done;
         }
     }
+    */
 }

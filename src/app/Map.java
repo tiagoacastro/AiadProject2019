@@ -16,11 +16,12 @@ public class Map implements Runnable{
             {' ', ' ', ' ', ' ', ' ', '_', ' ', ' ', ' ', ' ', ' '},
     };
 
-    public static Character[][] map = originalMap;
+    public static Character[][] oldMap = originalMap;
+    public static Character[][] newMap = originalMap;
 
     @Override
     public void run() {
-        for(Character[] line : map) {
+        for(Character[] line : newMap) {
             for (Character pos : line) {
                 System.out.print(pos);
                 System.out.print(' ');
@@ -28,6 +29,7 @@ public class Map implements Runnable{
             System.out.print('\n');
         }
         System.out.print('\n');
-        map = originalMap;
+        oldMap = newMap;
+        newMap = originalMap;
     }
 }
