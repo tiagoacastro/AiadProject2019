@@ -177,16 +177,4 @@ public class Main {
             spException.printStackTrace();
         }
     }
-
-
-    /*
-        Method that calculates the distance between 2 nodes
-    */
-    private static double calculateWeight(int f, int t){
-        int fx = Graph.nodes.get(f).getX();
-        int fy = Graph.nodes.get(f).getY();
-        int tx = Graph.nodes.get(t).getX();
-        int ty = Graph.nodes.get(t).getY();
-        return Math.sqrt(Math.pow(tx-fx, 2) + Math.pow(ty-fy, 2));
-    }
 }
