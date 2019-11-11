@@ -168,8 +168,7 @@ public class Main {
     */
     private static void createVehiclesAgents(){
         try {
-
-            Car carAgent = new Car(0, 9, 100);
+            Car carAgent = new Car(0, 4, 100);
             AgentController ac = mainContainer.acceptNewAgent("car" + 1, carAgent);
             ac.start();
         }
