@@ -4,6 +4,8 @@
 
 package app;
 
+import jade.core.AID;
+
 public class GraphEdge implements Comparable<GraphEdge>{
 
     enum Direction {
@@ -62,5 +64,9 @@ public class GraphEdge implements Comparable<GraphEdge>{
 
     public boolean isDestination(GraphNode node){
         return source == node;
+    }
+
+    public AID getTlAid(){
+        return destination.getTl().getAid();
     }
 }

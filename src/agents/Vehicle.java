@@ -23,6 +23,15 @@ public abstract class Vehicle extends Agent {
      */
     GraphEdge[] path;
     /*
+        Current edge
+     */
+    int currentEdge = 0;
+    /*
+        Vehicle AID
+     */
+    AID aid = this.getAID();
+
+    /*
         Method that is a placeholder for agent specific startup code.
      */
     protected abstract void setup();
