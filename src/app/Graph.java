@@ -35,7 +35,7 @@ public class Graph {
         nodes.addAll(Arrays.asList(node));
     }
 
-    public static void addEdge(GraphNode source, GraphNode destination, double weight){
+    public static void addEdge(GraphNode source, GraphNode destination, int weight){
         addEdgeHelper(source, destination, weight);
 
         if(!directed && source != destination){
@@ -44,7 +44,7 @@ public class Graph {
 
     }
 
-    public static void addEdgeHelper(GraphNode n1, GraphNode n2, double weight){
+    public static void addEdgeHelper(GraphNode n1, GraphNode n2, int weight){
         for (GraphEdge edge: n1.edges){
             if(edge.getStart() == n1 && edge.getEnd() == n2){
                 edge.setWeight(weight);

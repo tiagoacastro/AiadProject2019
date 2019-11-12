@@ -27,6 +27,11 @@ public class Car extends Vehicle{
         this.priorityPoints = priorityPoints;
 
         definePath();
+
+        for(int i = 0; i < this.path.length; i++){
+
+            System.out.println(this.path[i]);
+        }
     }
 
     /*
