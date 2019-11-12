@@ -18,10 +18,6 @@ public class Car extends Vehicle{
         Vehicle Remaining Priority Points
      */
     private int priorityPoints;
-    /*
-        Current edge
-     */
-    private int currentEdge = 0;
 
     /*
         Car Constructor
