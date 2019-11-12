@@ -17,6 +17,8 @@ public class Car extends Vehicle{
      */
     private int priorityPoints;
 
+    private int currentEdge;
+
     /*
         Car Constructor
      */
@@ -25,6 +27,7 @@ public class Car extends Vehicle{
         this.startingNode = startingNode;
         this.targetNode = targetNode;
         this.priorityPoints = priorityPoints;
+        this.currentEdge = 0;
 
         definePath();
 
@@ -39,7 +42,7 @@ public class Car extends Vehicle{
      */
     @Override
     protected void setup(){
-//        addBehaviour(new Decide(this, 1000));
+        addBehaviour(new Decide(this, 1000));
     }
 
     /*

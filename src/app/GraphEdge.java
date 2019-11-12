@@ -6,18 +6,27 @@ package app;
 
 public class GraphEdge implements Comparable<GraphEdge>{
 
+    enum Direction {
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
+    }
+
     private GraphNode source;
     private GraphNode destination;
     private int weight;
+    private Direction direction;
 
-    public GraphEdge(GraphNode s, GraphNode d, int w) {
+    public GraphEdge(GraphNode s, GraphNode d, int w, Direction direction) {
         this.source = s;
         this.destination = d;
         this.weight = w;
+        this.direction = direction;
     }
 
     public String toString(){
-        return String.format("(%s -> %s, %d", this.source.name, this.destination.name, this.weight);
+        return String.format("(%s -> %s, %d, %s", this.source.name, this.destination.name, this.weight, this.direction);
     }
 
     public GraphNode getStart() {
@@ -35,6 +44,8 @@ public class GraphEdge implements Comparable<GraphEdge>{
     public int getIdOfEndNode() {
         return this.destination.getNodeId();
     }
+
+    public Direction getDirection(){ return this.direction; }
 
     public void setWeight(int weight) {this.weight = weight;}
     public double getWeight() {

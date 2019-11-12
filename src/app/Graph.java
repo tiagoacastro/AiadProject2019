@@ -24,7 +24,6 @@ public class Graph {
         GraphNode four = new GraphNode(4, "4", 10, 5);
         Graph.addNode(four);
 
-
         Graph.addEdge(zero, two, 5);
         Graph.addEdge(one, two, 5);
         Graph.addEdge(two, three, 5);
@@ -52,7 +51,20 @@ public class Graph {
             }
         }
 
-        n1.edges.add(new GraphEdge(n1, n2, weight));
+        if(n1.getY() == n2.getY()){
+
+            if(n1.getX() < n2.getX())
+                n1.edges.add(new GraphEdge(n1, n2, weight, GraphEdge.Direction.EAST));
+            else
+                n1.edges.add(new GraphEdge(n1, n2, weight, GraphEdge.Direction.WEST));
+        }
+        else{
+
+            if(n1.getY() > n2.getY())
+                n1.edges.add(new GraphEdge(n1, n2, weight, GraphEdge.Direction.NORTH));
+            else
+                n1.edges.add(new GraphEdge(n1, n2, weight, GraphEdge.Direction.SOUTH));
+        }
     }
 
     public static void printEdges(){
