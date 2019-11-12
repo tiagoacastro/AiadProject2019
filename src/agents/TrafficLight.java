@@ -1,5 +1,6 @@
 package agents;
 
+import app.GraphEdge;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -10,15 +11,22 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
+import java.util.ArrayList;
+
 
 public class TrafficLight extends Agent {
     private AID aid;
+    private ArrayList<AID>[] cars = new ArrayList[4];
 
     /*
         Method that is a placeholder for agent specific startup code.
      */
     protected void setup(){
         this.aid = getAID();
+
+        for (int i = 0; i < 4; i++) {
+            cars[i] = new ArrayList<>();
+        }
 
         registerYellowPages();
 
@@ -59,19 +67,29 @@ public class TrafficLight extends Agent {
     }
 
     /*
-        Inner Class. Used to always be listening to vehicles QUERY messages
+        Inner Class. Used to always be listening to vehicles INFORM messages
      */
     private class Listen extends CyclicBehaviour {
         @Override
         public void action(){
-            MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF);
+            MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
             ACLMessage msg = myAgent.receive(msgTemp);
 
             if(msg != null){
-                /*ACLMessage reply = msg.createReply();
-                reply.setPerformative(ACLMessage.INFORM);*/
-
-                //TODO: guardar informação do veiculo
+                switch(msg.getContent()){
+                    case "NORTH":
+                        cars[0].add(msg.getSender());
+                        break;
+                    case "EAST":
+                        cars[1].add(msg.getSender());
+                        break;
+                    case "SOUTH":
+                        cars[2].add(msg.getSender());
+                        break;
+                    case "WEST":
+                        cars[3].add(msg.getSender());
+                        break;
+                }
             }
             else{
                 block();

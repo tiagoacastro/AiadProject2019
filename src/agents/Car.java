@@ -113,6 +113,7 @@ public class Car extends Vehicle{
             informMsg.addReceiver(path[currentEdge].getTlAid());
             informMsg.setConversationId("inform");
             informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
+            informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
             myAgent.send(informMsg);
         }
     }

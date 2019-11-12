@@ -8,7 +8,7 @@ import jade.core.AID;
 
 public class GraphEdge implements Comparable<GraphEdge>{
 
-    enum Direction {
+    public enum Direction {
         NORTH,
         SOUTH,
         EAST,
