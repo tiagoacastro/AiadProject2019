@@ -10,6 +10,9 @@ import java.util.HashMap;
 
 
 public abstract class Vehicle extends Agent {
+
+    int x;
+    int y;
     /*
         Vehicle starting node.
      */

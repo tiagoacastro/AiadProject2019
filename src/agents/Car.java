@@ -4,6 +4,7 @@ import app.Graph;
 import app.GraphEdge;
 import app.GraphNode;
 
+import app.Map;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
@@ -26,6 +27,9 @@ public class Car extends Vehicle{
 
         this.startingNode = startingNode;
         this.targetNode = targetNode;
+        this.x = startingNode.getX();
+        this.y = startingNode.getY();
+        Map.newMap[y][x] = 'X';
         this.priorityPoints = priorityPoints;
         this.currentEdge = 0;
 
@@ -97,18 +101,57 @@ public class Car extends Vehicle{
 
         @Override
         protected void onTick() {
-            //TODO: Decide entre: andar, esperar na fila, auction
+            addBehaviour(new Move());
         }
     }
 
     private class Move extends Behaviour {
+
+        private boolean done = false;
+
         @Override
         public void action(){
-            //TODO mover
+
+            if(!(x == path[path.length-1].getEnd().getX() && y == path[path.length-1].getEnd().getY())){
+
+                switch(path[currentEdge].getDirection()){
+
+                    case NORTH:
+                        y--;
+                        break;
+
+                    case SOUTH:
+                        y++;
+                        break;
+
+                    case EAST:
+                        x++;
+                        break;
+
+                    case WEST:
+                        x--;
+                        break;
+
+                    default:
+                        break;
+                }
+                Map.newMap[y][x] = 'X';
+
+                if(x == path[currentEdge].getEnd().getX() && y == path[currentEdge].getEnd().getY()){
+
+                    currentEdge++;
+                }
+            }
+            else{
+
+                myAgent.doDelete();
+            }
+
+            done = true;
         }
 
         public boolean done(){
-            return false;
+            return done;
         }
     }
 
