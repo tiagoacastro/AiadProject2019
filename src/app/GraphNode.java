@@ -76,4 +76,8 @@ public class GraphNode {
         Map.oldMap[y][x] = 'O';
         Map.newMap[y][x] = 'O';
     }
+
+    public TrafficLight getTl(){
+        return this.tl;
+    }
 }

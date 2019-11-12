@@ -7,7 +7,9 @@ import app.GraphNode;
 import app.Map;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.lang.acl.ACLMessage;
 
 import java.util.HashMap;
 
@@ -18,20 +20,16 @@ public class Car extends Vehicle{
      */
     private int priorityPoints;
 
-    private int currentEdge;
-
     /*
         Car Constructor
      */
     public Car(GraphNode startingNode, GraphNode targetNode, int priorityPoints){
-
         this.startingNode = startingNode;
         this.targetNode = targetNode;
         this.x = startingNode.getX();
         this.y = startingNode.getY();
         Map.newMap[y][x] = 'X';
         this.priorityPoints = priorityPoints;
-        this.currentEdge = 0;
 
         definePath();
 
@@ -155,14 +153,15 @@ public class Car extends Vehicle{
         }
     }
 
-    private class Wait extends Behaviour {
+    private class Inform extends OneShotBehaviour {
         @Override
         public void action(){
-            //TODO parado a ouvir à espera de auction
-        }
-
-        public boolean done(){
-            return false;
+            ACLMessage informMsg = new ACLMessage(ACLMessage.INFORM);
+            informMsg.addReceiver(path[currentEdge].getTlAid());
+            informMsg.setConversationId("inform");
+            informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
+            informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
+            myAgent.send(informMsg);
         }
     }
 

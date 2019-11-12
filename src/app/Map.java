@@ -16,8 +16,13 @@ public class Map implements Runnable{
             {' ', ' ', ' ', ' ', ' ', '|', ' ', ' ', ' ', ' ', ' '},
     };
 
-    public static Character[][] oldMap = originalMap;
-    public static Character[][] newMap = originalMap;
+    public static Character[][] oldMap = new Character[originalMap[0].length][originalMap.length];
+    public static Character[][] newMap = new Character[originalMap[0].length][originalMap.length];
+
+    Map(){
+        copyMap(originalMap, oldMap);
+        copyMap(originalMap, newMap);
+    }
 
     @Override
     public void run() {
@@ -29,7 +34,13 @@ public class Map implements Runnable{
             System.out.print('\n');
         }
         System.out.print('\n');
-        oldMap = newMap;
-        newMap = originalMap;
+        copyMap(newMap, oldMap);
+        copyMap(originalMap, newMap);
+    }
+
+    private void copyMap(Character[][] from, Character[][] to){
+        for (int r = 0; r < from.length; r++) {
+            to[r] = from[r].clone();
+        }
     }
 }
