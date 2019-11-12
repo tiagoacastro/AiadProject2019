@@ -10,7 +10,7 @@ import agents.TrafficLight;
 public class GraphNode {
     private int id;
     String name;
-    LinkedList<GraphEdge> edges;
+    public LinkedList<GraphEdge> edges;
     private int x;
     private int y;
     private boolean visited;

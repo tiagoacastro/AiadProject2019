@@ -21,7 +21,7 @@ public abstract class Vehicle extends Agent {
     /*
         Vehicle path.
      */
-    HashMap<Integer, GraphNode> path;
+    GraphEdge[] path;
     /*
         Method that is a placeholder for agent specific startup code.
      */

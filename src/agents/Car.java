@@ -1,6 +1,7 @@
 package agents;
 
 import app.Graph;
+import app.GraphEdge;
 import app.GraphNode;
 
 import jade.core.Agent;
@@ -24,7 +25,6 @@ public class Car extends Vehicle{
         this.startingNode = startingNode;
         this.targetNode = targetNode;
         this.priorityPoints = priorityPoints;
-        this.path = new HashMap<>();
 
         definePath();
     }
@@ -34,7 +34,7 @@ public class Car extends Vehicle{
      */
     @Override
     protected void setup(){
-        addBehaviour(new Decide(this, 1000));
+//        addBehaviour(new Decide(this, 1000));
     }
 
     /*
@@ -55,18 +55,31 @@ public class Car extends Vehicle{
 
     private void definePath(){
 
+        HashMap<Integer, GraphNode> nodePath = new HashMap<>();
+
         String pathString = Graph.DijkstraShortestPath(startingNode, targetNode);
         int pos = pathString.indexOf(" ");
         int counter = 0;
         while(pos != -1){
 
             String subString = pathString.substring(0, pos);
-            this.path.put(counter, Graph.nodes.get(Integer.parseInt(subString)));
+            nodePath.put(counter, Graph.nodes.get(Integer.parseInt(subString)));
             counter++;
             pathString = pathString.substring(pos+1, pathString.length());
             pos = pathString.indexOf(" ");
         }
-        this.path.put(counter, Graph.nodes.get(Integer.parseInt(pathString)));
+        nodePath.put(counter, Graph.nodes.get(Integer.parseInt(pathString)));
+
+        this.path = new GraphEdge[nodePath.size()-1];
+        for(int i = 0; i < nodePath.size()-1; i++){
+            for(int k = 0; k < nodePath.get(i).edges.size(); k++){
+
+                if(nodePath.get(i).edges.get(k).getEnd() == nodePath.get(i+1)){
+
+                    this.path[i] = nodePath.get(i).edges.get(k);
+                }
+            }
+        }
     }
 
     private class Decide extends TickerBehaviour {
