@@ -33,10 +33,10 @@ public class Main {
 
         startJADE();
 
-        createAgents();
-
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(new Map(), 0, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(new Map(), 0, 2, TimeUnit.SECONDS);
+
+        createAgents();
     }
 
 

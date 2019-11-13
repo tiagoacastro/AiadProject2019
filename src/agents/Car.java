@@ -11,6 +11,8 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -28,7 +30,6 @@ public class Car extends Vehicle{
         this.targetNode = targetNode;
         this.x = startingNode.getX();
         this.y = startingNode.getY();
-        Map.newMap[y][x] = 'X';
         this.priorityPoints = priorityPoints;
 
         definePath();
@@ -44,7 +45,8 @@ public class Car extends Vehicle{
      */
     @Override
     protected void setup(){
-        addBehaviour(new Decide(this, 1000));
+        Map.newMap[y][x] = 'X';
+        addBehaviour(new Decide(this, 2000));
     }
 
     /*
@@ -103,13 +105,9 @@ public class Car extends Vehicle{
         }
     }
 
-    private class Move extends Behaviour {
-
-        private boolean done = false;
-
+    private class Move extends OneShotBehaviour {
         @Override
         public void action(){
-
             if(!(x == path[path.length-1].getEnd().getX() && y == path[path.length-1].getEnd().getY())){
 
                 switch(path[currentEdge].getDirection()){
@@ -135,6 +133,10 @@ public class Car extends Vehicle{
                 }
                 Map.newMap[y][x] = 'X';
 
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
+                System.out.println( "Car: " + sdf.format(cal.getTime()) );
+
                 if(x == path[currentEdge].getEnd().getX() && y == path[currentEdge].getEnd().getY()){
 
                     currentEdge++;
@@ -144,12 +146,6 @@ public class Car extends Vehicle{
 
                 myAgent.doDelete();
             }
-
-            done = true;
-        }
-
-        public boolean done(){
-            return done;
         }
     }
 
