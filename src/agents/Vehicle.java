@@ -2,6 +2,7 @@ package agents;
 
 import app.GraphEdge;
 import app.GraphNode;
+import app.Pos;
 import jade.core.Agent;
 import jade.core.AID;
 
@@ -10,9 +11,10 @@ import java.util.HashMap;
 
 
 public abstract class Vehicle extends Agent {
-
-    int x;
-    int y;
+    /*
+        Vehicle position
+     */
+    Pos pos;
     /*
         Vehicle starting node.
      */
@@ -33,6 +35,10 @@ public abstract class Vehicle extends Agent {
         Vehicle AID
      */
     AID aid = this.getAID();
+    /*
+        If car is waiting and can't move
+     */
+    boolean waiting = false;
 
     /*
         Method that is a placeholder for agent specific startup code.

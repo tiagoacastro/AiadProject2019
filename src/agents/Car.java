@@ -1,10 +1,7 @@
 package agents;
 
-import app.Graph;
-import app.GraphEdge;
-import app.GraphNode;
+import app.*;
 
-import app.Map;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -28,8 +25,7 @@ public class Car extends Vehicle{
     public Car(GraphNode startingNode, GraphNode targetNode, int priorityPoints){
         this.startingNode = startingNode;
         this.targetNode = targetNode;
-        this.x = startingNode.getX();
-        this.y = startingNode.getY();
+        this.pos = new Pos(startingNode.getX(), startingNode.getY());
         this.priorityPoints = priorityPoints;
 
         definePath();
@@ -45,7 +41,7 @@ public class Car extends Vehicle{
      */
     @Override
     protected void setup(){
-        Map.newMap[y][x] = 'X';
+        Map.newMap[pos.y][pos.x] = 'X';
         addBehaviour(new Decide(this, 2000));
     }
 
@@ -101,43 +97,42 @@ public class Car extends Vehicle{
 
         @Override
         protected void onTick() {
-            addBehaviour(new Move());
+            if(waiting)
+                Map.newMap[pos.y][pos.x] = 'X';
+            else {
+                Pos aux = new Pos(pos.x,pos.y);
+                chooseNext(aux);
+
+                while(Map.oldMap[aux.y][aux.x] == 'X')
+                    chooseNext(aux);
+
+                switch(Map.oldMap[aux.y][aux.x]){
+                    case '|': case '-':
+                        addBehaviour(new Move());
+                        break;
+                    case 'O':
+                        addBehaviour(new Inform());
+                        Map.newMap[pos.y][pos.x] = 'X';
+                        waiting = true;
+                        break;
+                }
+            }
         }
     }
 
     private class Move extends OneShotBehaviour {
         @Override
         public void action(){
-            if(!(x == path[path.length-1].getEnd().getX() && y == path[path.length-1].getEnd().getY())){
+            if(!(pos.x == path[path.length-1].getEnd().getX() && pos.y == path[path.length-1].getEnd().getY())){
 
-                switch(path[currentEdge].getDirection()){
-
-                    case NORTH:
-                        y--;
-                        break;
-
-                    case SOUTH:
-                        y++;
-                        break;
-
-                    case EAST:
-                        x++;
-                        break;
-
-                    case WEST:
-                        x--;
-                        break;
-
-                    default:
-                        break;
-                }
-                Map.newMap[y][x] = 'X';
+                chooseNext(pos);
+                Map.newMap[pos.y][pos.x] = 'X';
 
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
                 System.out.println( "Car: " + sdf.format(cal.getTime()) );
 
-                if(x == path[currentEdge].getEnd().getX() && y == path[currentEdge].getEnd().getY()){
+                if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
 
                     currentEdge++;
                 }
@@ -146,6 +141,25 @@ public class Car extends Vehicle{
 
                 myAgent.doDelete();
             }
+        }
+    }
+
+    private void chooseNext(Pos pos) {
+        switch(path[currentEdge].getDirection()){
+            case NORTH:
+                pos.y--;
+                break;
+            case SOUTH:
+                pos.y++;
+                break;
+            case EAST:
+                pos.x++;
+                break;
+            case WEST:
+                pos.x--;
+                break;
+            default:
+                break;
         }
     }
 
