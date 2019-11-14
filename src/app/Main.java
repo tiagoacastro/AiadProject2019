@@ -42,13 +42,6 @@ public class Main {
         scheduler.scheduleAtFixedRate(new Map(), tick, tick, TimeUnit.MILLISECONDS);
 
         createAgents();
-
-        try {
-            AgentController ac = mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma());
-            ac.start();
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
     }
 
 
