@@ -33,7 +33,7 @@ public class TrafficLight extends Agent {
         registerYellowPages();
 
         addBehaviour(new Listen());
-        addBehaviour(new StartAuction(this, Main.tick * 10));
+        addBehaviour(new Auction(this, Main.tick * 10));
     }
 
     /*
@@ -101,112 +101,67 @@ public class TrafficLight extends Agent {
         }
     }
 
-    /*
-        Inner Class. Used to start an auction every 20 seconds
-    */
-    private class StartAuction extends TickerBehaviour{
+    private class Auction extends TickerBehaviour {
+        int maxPriorityPoints = 0;
+        boolean done = false;
+        int chosen;
 
-
-        public StartAuction(Agent a, long period) {
+        Auction(Agent a, long period) {
             super(a, period);
         }
 
         @Override
-        protected void onTick() {
+        public void onTick() {
+            int i = 0;
 
-            addBehaviour(new Auction());
-        }
-    }
+            while(!done){
+                if(cars[i].size() != 0){
+                    ACLMessage cfpMsg = new ACLMessage(ACLMessage.CFP);
+                    cfpMsg.addReceiver(cars[i].get(0));
+                    cfpMsg.setConversationId("tl_car_auction");
+                    cfpMsg.setReplyWith("cfp" + System.currentTimeMillis());
 
-
-
-
-    private class Auction extends Behaviour {
-
-        int step = 0;
-
-        int lanesInAuction;
-
-        int maxPriorityPoints;
-        int maxPriorityPointsDirection;
-
-        @Override
-        public void action() {
-
-            switch(step){
-
-                case 0:
-
-                    for(int i = 0; i < cars.length; i++){
-
-                        if(cars[i].size() != 0){
-
-                            lanesInAuction++;
-
-                            ACLMessage cfpMsg = new ACLMessage(ACLMessage.CFP);
-                            cfpMsg.addReceiver(cars[i].get(0));
-                            cfpMsg.setConversationId("tl_car_auction");
-                            cfpMsg.setReplyWith("cfp" + System.currentTimeMillis());
-
-                            String content = maxPriorityPoints + "|";
-                            for(int k = 1; k < cars[i].size(); k++){
-
-                                content += cars[i].get(k).toString() + "|";
-                            }
-
-                            cfpMsg.setContent(content);
-                            myAgent.send(cfpMsg);
-                            System.out.println("TL sent CFP to each of the first cars");
-                        }
+                    StringBuilder content = new StringBuilder();
+                    content.append(maxPriorityPoints);
+                    content.append("|");
+                    for(int k = 1; k < cars[i].size(); k++){
+                        content.append(cars[i].get(k).toString());
+                        content.append("|");
                     }
+                    cfpMsg.setContent(content.toString());
 
-                    step = 1;
-                    break;
+                    myAgent.send(cfpMsg);
+                    System.out.println("TL sent CFP to each of the first cars");
+                }
 
+                MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
+                MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
+                MessageTemplate bothTemp = MessageTemplate.or(proposeTemp, refuseTemp);
 
-                case 1:
+                ACLMessage reply = myAgent.receive(bothTemp);
 
-                    int i = 0;
-                    MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
-                    MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
-                    MessageTemplate bothTemp = MessageTemplate.or(proposeTemp, refuseTemp);
-
-                    while(i < lanesInAuction){
-
-                        ACLMessage reply = myAgent.receive(bothTemp);
-
-                        if(reply != null){
-
-                            if(reply.getPerformative() == ACLMessage.PROPOSE){
-
-                                int proposedPP = Integer.parseInt(reply.getContent());
-                                if(proposedPP > maxPriorityPoints){
-
-                                    maxPriorityPoints = proposedPP;
-                                }
-
-                                System.out.println("TL received proposal to increase the max PP");
-                                step = 2;
-                            }
-                            else if(reply.getPerformative() == ACLMessage.REFUSE){
-
-                                System.out.println("TL received refusal to increase the max PP");
-                                step = 2;
-                            }
+                if(reply != null){
+                    if(reply.getPerformative() == ACLMessage.PROPOSE){
+                        int proposedPP = Integer.parseInt(reply.getContent());
+                        if(proposedPP > maxPriorityPoints){
+                            maxPriorityPoints = proposedPP;
                         }
-                        else{
-                            block();
-                        }
+                        chosen = i;
+                        System.out.println("TL received proposal to increase the max PP");
                     }
-                    break;
+                    else if(reply.getPerformative() == ACLMessage.REFUSE){
+                        done = true;
+                        System.out.println("TL received refusal to increase the max PP");
+                    }
+                }
+                else{
+                    block();
+                }
 
+                i++;
+                if(i >= 4)
+                    i = 0;
             }
-        }
-
-        @Override
-        public boolean done() {
-
-            return (step == 2);
         }
     }
 }
