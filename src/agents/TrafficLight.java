@@ -1,5 +1,6 @@
 package agents;
 
+import app.Main;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -32,7 +33,7 @@ public class TrafficLight extends Agent {
         registerYellowPages();
 
         addBehaviour(new Listen());
-        addBehaviour(new StartAuction(this, 5000));
+        addBehaviour(new StartAuction(this, Main.tick * 10));
     }
 
     /*

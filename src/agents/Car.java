@@ -43,8 +43,7 @@ public class Car extends Vehicle{
     @Override
     protected void setup(){
         Map.newMap[pos.y][pos.x] = 'X';
-//        addBehaviour(new Decide(this, 2000));
-        addBehaviour(new Inform());
+        addBehaviour(new Decide(this, Main.tick));
     }
 
     /*
