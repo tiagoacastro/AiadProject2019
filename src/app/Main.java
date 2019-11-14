@@ -132,7 +132,7 @@ public class Main {
 
         try
         {
-            Thread.sleep(300);
+            Thread.sleep(tick/4);
         }
         catch(InterruptedException ex)
         {
