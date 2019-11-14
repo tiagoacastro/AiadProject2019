@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class TrafficLight extends Agent {
     private AID aid;
     private ArrayList<AID>[] cars = new ArrayList[4];
+    private boolean alternateLane = true;
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -112,7 +113,12 @@ public class TrafficLight extends Agent {
 
         @Override
         public void onTick() {
-            int i = 0;
+            int i;
+
+            if(alternateLane)
+                i = 0;
+            else
+                i = 3;
 
             while(!done){
                 if(cars[i].size() != 0){
@@ -151,6 +157,7 @@ public class TrafficLight extends Agent {
                     }
                     else if(reply.getPerformative() == ACLMessage.REFUSE){
                         done = true;
+                        alternateLane = !alternateLane;
                         System.out.println("TL received refusal to increase the max PP");
                     }
                 }
@@ -158,9 +165,15 @@ public class TrafficLight extends Agent {
                     block();
                 }
 
-                i++;
-                if(i >= 4)
-                    i = 0;
+                if(alternateLane){
+                    i++;
+                    if(i > 3)
+                        i = 0;
+                } else {
+                    i--;
+                    if(i < 0)
+                        i = 3;
+                }
             }
         }
     }
