@@ -138,31 +138,31 @@ public class TrafficLight extends Agent {
 
                     myAgent.send(cfpMsg);
                     System.out.println("TL sent CFP to each of the first cars");
-                }
 
-                MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
-                MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
-                MessageTemplate bothTemp = MessageTemplate.or(proposeTemp, refuseTemp);
+                    MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
+                    MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
+                    MessageTemplate bothTemp = MessageTemplate.or(proposeTemp, refuseTemp);
 
-                ACLMessage reply = myAgent.receive(bothTemp);
+                    ACLMessage reply = myAgent.receive(bothTemp);
 
-                if(reply != null){
-                    if(reply.getPerformative() == ACLMessage.PROPOSE){
-                        int proposedPP = Integer.parseInt(reply.getContent());
-                        if(proposedPP > maxPriorityPoints){
-                            maxPriorityPoints = proposedPP;
+                    if(reply != null){
+                        if(reply.getPerformative() == ACLMessage.PROPOSE){
+                            int proposedPP = Integer.parseInt(reply.getContent());
+                            if(proposedPP > maxPriorityPoints){
+                                maxPriorityPoints = proposedPP;
+                            }
+                            chosen = i;
+                            System.out.println("TL received proposal to increase the max PP");
                         }
-                        chosen = i;
-                        System.out.println("TL received proposal to increase the max PP");
+                        else if(reply.getPerformative() == ACLMessage.REFUSE){
+                            done = true;
+                            alternateLane = !alternateLane;
+                            System.out.println("TL received refusal to increase the max PP");
+                        }
                     }
-                    else if(reply.getPerformative() == ACLMessage.REFUSE){
-                        done = true;
-                        alternateLane = !alternateLane;
-                        System.out.println("TL received refusal to increase the max PP");
+                    else{
+                        block();
                     }
-                }
-                else{
-                    block();
                 }
 
                 if(alternateLane){
