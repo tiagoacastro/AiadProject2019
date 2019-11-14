@@ -1,0 +1,15 @@
+	CAR			TL
+
+				cyclic behaviour (listen)
+	chega
+	manda msg
+				guarda a info do carro
+
+			...
+
+
+				(20seg 20seg inicia uma auction)
+				mandar msg ao da frente com os AID de todos + valor em que está o leilão
+
+	frente manda a msg a todos os da fila
+	sai do leilao quando tiver batido/todos tiverem dado REJECT_PROPOSAL

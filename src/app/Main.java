@@ -9,8 +9,6 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import java.util.concurrent.*;
-
 
 public class Main {
     /*
@@ -33,8 +31,8 @@ public class Main {
 
         startJADE();
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(new Map(), 2, 2, TimeUnit.SECONDS);
+//        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//        scheduler.scheduleAtFixedRate(new Map(), 2, 2, TimeUnit.SECONDS);
 
         createAgents();
     }
@@ -75,7 +73,8 @@ public class Main {
 
     *//*
         Edges File Parser
-     *//*
+     */
+    /*
     private static void parseEdgesFile(){
         File nodeFile = new File("resources/my_edges.edg.xml");
         Document doc = null;
@@ -163,9 +162,28 @@ public class Main {
     */
     private static void createVehiclesAgents(){
         try {
-            Car carAgent = new Car(Graph.nodes.get(1), Graph.nodes.get(4), 100);
-            AgentController ac = mainContainer.acceptNewAgent("car" + 1, carAgent);
-            ac.start();
+            // 3cars de 1->4
+            Car carAgent1 = new Car(Graph.nodes.get(1), Graph.nodes.get(4), 100);
+            AgentController ac1 = mainContainer.acceptNewAgent("car" + 1, carAgent1);
+            ac1.start();
+
+            Car carAgent2 = new Car(Graph.nodes.get(1), Graph.nodes.get(4), 100);
+            AgentController ac2 = mainContainer.acceptNewAgent("car" + 2, carAgent2);
+            ac2.start();
+
+            Car carAgent3 = new Car(Graph.nodes.get(1), Graph.nodes.get(4), 100);
+            AgentController ac3 = mainContainer.acceptNewAgent("car" + 3, carAgent3);
+            ac3.start();
+
+
+            // 2cars de 0->4
+            Car carAgent4 = new Car(Graph.nodes.get(0), Graph.nodes.get(4), 100);
+            AgentController ac4 = mainContainer.acceptNewAgent("car" + 4, carAgent4);
+            ac4.start();
+
+            Car carAgent5 = new Car(Graph.nodes.get(0), Graph.nodes.get(4), 100);
+            AgentController ac5 = mainContainer.acceptNewAgent("car" + 5, carAgent5);
+            ac5.start();
         }
         catch(StaleProxyException spException){
 

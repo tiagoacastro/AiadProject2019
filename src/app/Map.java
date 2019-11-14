@@ -29,9 +29,9 @@ public class Map implements Runnable{
 
     @Override
     public void run() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
-        System.out.println( "Map: " + sdf.format(cal.getTime()) );
+//        Calendar cal = Calendar.getInstance();
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
+//        System.out.println( "Map: " + sdf.format(cal.getTime()) );
 
         for(Character[] line : newMap) {
             for (Character pos : line) {
@@ -44,9 +44,9 @@ public class Map implements Runnable{
         copyMap(newMap, oldMap);
         copyMap(originalMap, newMap);
 
-        cal = Calendar.getInstance();
-        sdf = new SimpleDateFormat("HH:mm:ss:SS");
-        System.out.println( "Map_end: " + sdf.format(cal.getTime()) );
+//        cal = Calendar.getInstance();
+//        sdf = new SimpleDateFormat("HH:mm:ss:SS");
+//        System.out.println( "Map_end: " + sdf.format(cal.getTime()) );
     }
 
     private void copyMap(Character[][] from, Character[][] to){

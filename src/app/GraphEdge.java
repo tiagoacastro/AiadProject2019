@@ -28,7 +28,7 @@ public class GraphEdge implements Comparable<GraphEdge>{
     }
 
     public String toString(){
-        return String.format("(%s -> %s, %d, %s", this.source.name, this.destination.name, this.weight, this.direction);
+        return String.format("(%s -> %s, %d, %s)", this.source.name, this.destination.name, this.weight, this.direction);
     }
 
     public GraphNode getStart() {
