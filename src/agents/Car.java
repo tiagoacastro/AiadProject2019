@@ -186,7 +186,6 @@ public class Car extends Vehicle{
         Inner Class. Used when in Auction
      */
     private class Auction extends Behaviour {
-
         int step = 0;
         ArrayList<AID> carsBehindAID;
         int currentMaxPriorityPoints;
@@ -194,20 +193,15 @@ public class Car extends Vehicle{
 
         @Override
         public void action() {
-
             switch(step){
-
                 case 0:         // Receive CFP, either one with info (first car) or empty (other cars)
-
                     MessageTemplate msgTempCfp = MessageTemplate.MatchPerformative(ACLMessage.CFP);
                     ACLMessage cfpMsgTL = myAgent.receive(msgTempCfp);
 
                     if(cfpMsgTL != null){
-
                         String content = cfpMsgTL.getContent();
 
                         if(content != null){                // First car of the queue
-
                             System.out.println("First car of the queue received the CFP");
                             tlAid = cfpMsgTL.getSender();
 
@@ -215,12 +209,13 @@ public class Car extends Vehicle{
                             currentMaxPriorityPoints = Integer.parseInt(content.substring(0, pos));
                             String aids = content.substring(pos + 1);
 
-                            carsBehindAID = new ArrayList<AID>();
+                            carsBehindAID = new ArrayList<>();
                             int posX = aids.indexOf('|');
-                            while(posX != -1){
 
+                            while(posX != -1){
                                 StringACLCodec codec = new StringACLCodec(new StringReader(aids.substring(0, posX)), null);
                                 AID tempAid = null;
+
                                 try {
                                     tempAid = codec.decodeAID();
                                 } catch (ACLCodec.CodecException e) {
@@ -235,28 +230,24 @@ public class Car extends Vehicle{
                             step = 1;
                         }
                         else{                               // Cars behind the first of the queue
-
                             System.out.println("Car behind the first received CFP from the first");
                             ACLMessage replyToFirstCarMsg = cfpMsgTL.createReply();
                             replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
                             replyToFirstCarMsg.setContent(String.valueOf(choosePriorityPoints()));
                             myAgent.send(replyToFirstCarMsg);
                             System.out.println("Car behind the first one sent his PROPOSE");
+
                             step = 3;
                         }
                     }
                     else{
-
                         block();
                     }
+
                     break;
-
-
                 case 1:         // Car sends CFP to the cars behind it in the queue
-
                     ACLMessage cfpMsgCar = new ACLMessage(ACLMessage.CFP);
                     for(int i = 0; i < carsBehindAID.size(); i++){
-
                         cfpMsgCar.addReceiver(carsBehindAID.get(i));
                     }
                     cfpMsgCar.setConversationId("car_car_auction");
@@ -264,25 +255,20 @@ public class Car extends Vehicle{
                     myAgent.send(cfpMsgCar);
                     System.out.println("First car sent CFP to the ones behind him");
                     step = 2;
+
                     break;
-
-
                 case 2:         // Receive every PROPOSE and send to TL the total sum of the PriorityPoints
-
                     MessageTemplate msgTempPropose = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
                     int totalProposedPP = 0;
                     int i = 0;
                     while(i < carsBehindAID.size()){
-
                         ACLMessage proposeMsg = myAgent.receive(msgTempPropose);
 
                         if(proposeMsg != null){
-
                             totalProposedPP += Integer.parseInt(proposeMsg.getContent());
                             i++;
                         }
                         else{
-
                             block();
                         }
                     }
@@ -290,12 +276,10 @@ public class Car extends Vehicle{
 
                     ACLMessage replyToTL;
                     if(totalProposedPP > currentMaxPriorityPoints){
-
                         replyToTL = new ACLMessage(ACLMessage.PROPOSE);
                         replyToTL.setContent(String.valueOf(totalProposedPP));
                     }
                     else{
-
                         replyToTL = new ACLMessage(ACLMessage.REFUSE);
                     }
                     replyToTL.setConversationId("car_tl_auction");
@@ -306,8 +290,6 @@ public class Car extends Vehicle{
 
                     step = 3;
                     break;
-
-
                 default:
                     break;
             }
