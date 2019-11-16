@@ -50,7 +50,7 @@ public class Car extends Vehicle{
     @Override
     protected void takeDown(){
 
-        System.out.println("Car-agent has terminated!");
+        System.out.println(getAID().getName().substring(0, getAID().getName().indexOf("@")) + " has terminated!");
     }
 
     /*
@@ -251,7 +251,8 @@ public class Car extends Vehicle{
 //                                }
 //                            }
 
-                            step = 3;
+
+                            step = 0;
                         }
                     }
                     else{
