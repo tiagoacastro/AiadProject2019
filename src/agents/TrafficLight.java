@@ -34,7 +34,7 @@ public class TrafficLight extends Agent {
         registerYellowPages();
 
         addBehaviour(new Listen());
-        addBehaviour(new Auction(this, Main.tick * 10));
+        addBehaviour(new StartAuction(this, Main.tick * 10));
     }
 
     /*
@@ -75,39 +75,145 @@ public class TrafficLight extends Agent {
      */
     private class Listen extends CyclicBehaviour {
         @Override
-        public void action(){
+        public void action() {
             MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
             ACLMessage msg = myAgent.receive(msgTemp);
 
-            if(msg != null){
+            if (msg != null) {
 
-                switch(msg.getContent()){
+                switch (msg.getContent()) {
                     case "NORTH":
-                        cars[0].add(msg.getSender());
+                        if(!cars[0].contains(msg.getSender()))
+                            cars[0].add(msg.getSender());
                         break;
                     case "EAST":
-                        cars[1].add(msg.getSender());
+                        if(!cars[1].contains(msg.getSender()))
+                            cars[1].add(msg.getSender());
                         break;
                     case "SOUTH":
-                        cars[2].add(msg.getSender());
+                        if(!cars[2].contains(msg.getSender()))
+                            cars[2].add(msg.getSender());
                         break;
                     case "WEST":
-                        cars[3].add(msg.getSender());
+                        if(!cars[3].contains(msg.getSender()))
+                            cars[3].add(msg.getSender());
                         break;
                 }
-            }
-            else{
+            } else {
                 block();
             }
         }
     }
 
-    private class Auction extends TickerBehaviour {
+    private class StartAuction extends TickerBehaviour {
+
+
+        public StartAuction(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+
+            addBehaviour(new Auction());
+        }
+    }
+
+    private class Auction extends Behaviour {
+
+
+        int i = 0;
+        int lanesInAuction = 0;
+        int maxPriorityPoints = 0;
+
+        @Override
+        public void action() {
+
+            int step = 0;
+            while(i < cars.length){
+
+                switch(step){
+
+                    case 0:
+
+                        if(cars[i].size() != 0){
+
+                            lanesInAuction++;
+
+                            ACLMessage cfpMsg = new ACLMessage(ACLMessage.CFP);
+                            cfpMsg.addReceiver(cars[i].get(0));
+                            cfpMsg.setConversationId("tl_car_auction");
+                            cfpMsg.setReplyWith("cfp" + System.currentTimeMillis());
+
+                            String content = maxPriorityPoints + "|";
+                            for (int k = 1; k < cars[i].size(); k++) {
+
+                                content += cars[i].get(k).toString() + "|";
+                            }
+
+                            cfpMsg.setContent(content);
+                            myAgent.send(cfpMsg);
+                            System.out.println("TL sent CFP to one of the first cars");
+
+                            step = 1;
+                        }
+                        else{
+
+                            i++;
+                        }
+                        break;
+
+
+                    case 1:
+
+                        MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
+                        MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
+                        MessageTemplate bothTemp = MessageTemplate.or(proposeTemp, refuseTemp);
+
+                        ACLMessage reply = myAgent.receive(bothTemp);
+
+                        if (reply != null) {
+
+                            if (reply.getPerformative() == ACLMessage.PROPOSE) {
+
+                                int proposedPP = Integer.parseInt(reply.getContent());
+                                if (proposedPP > maxPriorityPoints) {
+
+                                    maxPriorityPoints = proposedPP;
+                                }
+
+                                System.out.println("TL received proposal to increase the max PP");
+                            } else if (reply.getPerformative() == ACLMessage.REFUSE) {
+
+                                System.out.println("TL received refusal to increase the max PP");
+                            }
+                            step = 0;
+                            i++;
+                        }
+                        else {
+
+                            block();
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public boolean done() {
+
+            return (i == 4);
+        }
+    }
+
+    /*
+    private class AuctionCastro extends TickerBehaviour {
         int maxPriorityPoints = 0;
         boolean done = false;
         int chosen;
 
-        Auction(Agent a, long period) {
+        AuctionCastro(Agent a, long period) {
             super(a, period);
         }
 
@@ -177,4 +283,5 @@ public class TrafficLight extends Agent {
             }
         }
     }
+    */
 }

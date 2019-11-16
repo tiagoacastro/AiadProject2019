@@ -13,9 +13,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.StringACLCodec;
 
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -152,10 +150,6 @@ public class Car extends Vehicle{
                 chooseNext(pos);
                 Map.newMap[pos.y][pos.x] = 'X';
 
-//                Calendar cal = Calendar.getInstance();
-//                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
-//                System.out.println( "Car: " + sdf.format(cal.getTime()) );
-
                 if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
 
                     currentEdge++;
@@ -187,24 +181,24 @@ public class Car extends Vehicle{
      */
     private class Auction extends Behaviour {
         int step = 0;
-        ArrayList<AID> carsBehindAID;
-        int currentMaxPriorityPoints;
-        AID tlAid;
+        ArrayList<AID> carsBehindAID = null;
+        int currentMaxPriorityPoints = 0;
+        AID tlAid = null;
         int retryVal = 0;
         boolean retry = false;
 
         @Override
         public void action() {
+
             switch(step){
                 case 0:         // Receive CFP, either one with info (first car) or empty (other cars)
                     MessageTemplate msgTempCfp = MessageTemplate.MatchPerformative(ACLMessage.CFP);
                     ACLMessage cfpMsgTL = myAgent.receive(msgTempCfp);
-
                     if(cfpMsgTL != null){
                         String content = cfpMsgTL.getContent();
 
                         if(content != null){                // First car of the queue
-                            System.out.println("First car of the queue received the CFP");
+                            System.out.println("First car (" + getAID().getName().substring(0, getAID().getName().indexOf("@")) + ") of the queue received the CFP");
                             tlAid = cfpMsgTL.getSender();
 
                             int pos = content.indexOf("|");
@@ -238,24 +232,24 @@ public class Car extends Vehicle{
                             replyToFirstCarMsg.setContent(String.valueOf(choosePriorityPoints()));
                             myAgent.send(replyToFirstCarMsg);
                             System.out.println("Car behind the first one sent his PROPOSE");
-                            content = "";
-
-                            while(content != null) {
-                                cfpMsgTL = myAgent.receive(msgTempCfp);
-
-                                if (cfpMsgTL != null) {
-                                    content = cfpMsgTL.getContent();
-
-                                    if (content != null) {
-                                        System.out.println("Car behind the first received CFP from the first to give more points");
-                                        replyToFirstCarMsg = cfpMsgTL.createReply();
-                                        replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
-                                        replyToFirstCarMsg.setContent(String.valueOf(choosePriorityPoints()));
-                                        myAgent.send(replyToFirstCarMsg);
-                                        System.out.println("Car behind the first one sent his PROPOSE");
-                                    }
-                                }
-                            }
+//                            content = "";
+//
+//                            while(content != null) {
+//                                cfpMsgTL = myAgent.receive(msgTempCfp);
+//
+//                                if (cfpMsgTL != null) {
+//                                    content = cfpMsgTL.getContent();
+//
+//                                    if (content != null) {
+//                                        System.out.println("Car behind the first received CFP from the first to give more points");
+//                                        replyToFirstCarMsg = cfpMsgTL.createReply();
+//                                        replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
+//                                        replyToFirstCarMsg.setContent(String.valueOf(choosePriorityPoints()));
+//                                        myAgent.send(replyToFirstCarMsg);
+//                                        System.out.println("Car behind the first one sent his PROPOSE");
+//                                    }
+//                                }
+//                            }
 
                             step = 3;
                         }
@@ -300,45 +294,53 @@ public class Car extends Vehicle{
                     if(totalProposedPP > currentMaxPriorityPoints){
                         replyToTL = new ACLMessage(ACLMessage.PROPOSE);
                         replyToTL.setContent(String.valueOf(totalProposedPP));
-                        replyToTL.setConversationId("car_tl_auction");
-                        replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
-                        replyToTL.addReceiver(tlAid);
-                        myAgent.send(replyToTL);
-                        System.out.println("First car sent the PROPOSE to the tl");
-
-                        cfpMsgCar = new ACLMessage(ACLMessage.CFP);
-                        for(int j = 0; j < carsBehindAID.size(); j++){
-                            cfpMsgCar.addReceiver(carsBehindAID.get(i));
-                        }
-                        cfpMsgCar.setConversationId("car_car_auction");
-                        cfpMsgCar.setReplyWith("cfp" + System.currentTimeMillis());
-                        myAgent.send(cfpMsgCar);
-                        System.out.println("First car sent to other cars to say he wont need higher values");
+//                        replyToTL.setConversationId("car_tl_auction");
+//                        replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
+//                        replyToTL.addReceiver(tlAid);
+//                        myAgent.send(replyToTL);
+//                        System.out.println("First car sent the PROPOSE to the tl");
+//
+//                        cfpMsgCar = new ACLMessage(ACLMessage.CFP);
+//                        for(int j = 0; j < carsBehindAID.size(); j++){
+//                            cfpMsgCar.addReceiver(carsBehindAID.get(i));
+//                        }
+//                        cfpMsgCar.setConversationId("car_car_auction");
+//                        cfpMsgCar.setReplyWith("cfp" + System.currentTimeMillis());
+//                        myAgent.send(cfpMsgCar);
+//                        System.out.println("First car sent to other cars to say he wont need higher values");
                     }
                     else{
-                        if(totalProposedPP > retryVal){
-                            retryVal = totalProposedPP;
-                            retry = true;
-                            step = 1;
-                            break;
-                        } else {
-                            replyToTL = new ACLMessage(ACLMessage.REFUSE);
-                            replyToTL.setConversationId("car_tl_auction");
-                            replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
-                            replyToTL.addReceiver(tlAid);
-                            myAgent.send(replyToTL);
-                            System.out.println("First car sent the PROPOSE to the tl");
-
-                            cfpMsgCar = new ACLMessage(ACLMessage.CFP);
-                            for(int j = 0; j < carsBehindAID.size(); j++){
-                                cfpMsgCar.addReceiver(carsBehindAID.get(i));
-                            }
-                            cfpMsgCar.setConversationId("car_car_auction");
-                            cfpMsgCar.setReplyWith("cfp" + System.currentTimeMillis());
-                            myAgent.send(cfpMsgCar);
-                            System.out.println("First car sent to other cars to say he wont need higher values");
-                        }
+                        replyToTL = new ACLMessage(ACLMessage.REFUSE);
+//                        if(totalProposedPP > retryVal){
+//                            retryVal = totalProposedPP;
+//                            retry = true;
+//                            step = 1;
+//                            break;
+//                        } else {
+//                            replyToTL = new ACLMessage(ACLMessage.REFUSE);
+//                            replyToTL.setConversationId("car_tl_auction");
+//                            replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
+//                            replyToTL.addReceiver(tlAid);
+//                            myAgent.send(replyToTL);
+//                            System.out.println("First car sent the PROPOSE to the tl");
+//
+//                            cfpMsgCar = new ACLMessage(ACLMessage.CFP);
+//                            for(int j = 0; j < carsBehindAID.size(); j++){
+//                                cfpMsgCar.addReceiver(carsBehindAID.get(i));
+//                            }
+//                            cfpMsgCar.setConversationId("car_car_auction");
+//                            cfpMsgCar.setReplyWith("cfp" + System.currentTimeMillis());
+//                            myAgent.send(cfpMsgCar);
+//                            System.out.println("First car sent to other cars to say he wont need higher values");
+//                        }
                     }
+
+                    replyToTL.setConversationId("car_tl_auction");
+                    replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
+                    replyToTL.addReceiver(tlAid);
+                    myAgent.send(replyToTL);
+                    System.out.println("First car sent the PROPOSE to the tl");
+                    waiting = false;
 
                     step = 3;
                     break;
