@@ -14,6 +14,7 @@ import jade.lang.acl.StringACLCodec;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public abstract class Vehicle extends Agent {
     /**
@@ -35,11 +36,11 @@ public abstract class Vehicle extends Agent {
     /**
      *  Vehicle path.
      */
-    private GraphEdge[] path;
+    GraphEdge[] path;
     /**
      *  Current edge
      */
-    private int currentEdge = 0;
+    int currentEdge = 0;
     /**
      *  Vehicle AID
      */
@@ -56,19 +57,44 @@ public abstract class Vehicle extends Agent {
      *   Represents if vehicle can pass the traffic light
      */
     private boolean pass = false;
+    /**
+     *   Max tries to improve the auction value
+     */
+    int maxTries;
+    /**
+     *   number of try on auction
+     */
+    int retry = 1;
 
     /**
      * Vehicle constructor
      * @param startingNode      start
      * @param targetNode        end
-     * @param priorityPoints    priority points
      */
-    public Vehicle(GraphNode startingNode, GraphNode targetNode, int priorityPoints){
-        this.nickname = "";
+    Vehicle(GraphNode startingNode, GraphNode targetNode){
+        this.startingNode = startingNode;
+        this.targetNode = targetNode;
+        this.pos = new Pos(startingNode.getX(), startingNode.getY());
+        Random r = new Random();
+        this.priorityPoints = r.nextInt(51) + 50; //generate random from 50 to 100 (both inclusive)
+        this.maxTries = r.nextInt(5)+1;
+
+        definePath();
+    }
+
+    /**
+     * Vehicle constructor with chosen priority points and max tries
+     * @param startingNode      start
+     * @param targetNode        end
+     * @param priorityPoints    priority points
+     * @param maxTries          max tries
+     */
+    Vehicle(GraphNode startingNode, GraphNode targetNode, int priorityPoints, int maxTries){
         this.startingNode = startingNode;
         this.targetNode = targetNode;
         this.pos = new Pos(startingNode.getX(), startingNode.getY());
         this.priorityPoints = priorityPoints;
+        this.maxTries = maxTries;
 
         definePath();
     }
@@ -311,15 +337,14 @@ public abstract class Vehicle extends Agent {
                                 System.out.println(nickname + " behind the first car received its CFP");
                                 ACLMessage replyToFirstCarMsg = message.createReply();
 
-                                int tempPP = choosePriorityPoints();
-                                if (tempPP > lastPriorityPoints) {
-
+                                if (retry <= maxTries) {
+                                    int tempPP = choosePriorityPoints();
+                                    retry++;
                                     lastPriorityPoints = tempPP;
                                     replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
                                     replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
                                     System.out.println(nickname + " behind the first car sent his PROPOSE (" + tempPP + ")");
                                 } else {
-
                                     replyToFirstCarMsg.setPerformative(ACLMessage.REFUSE);
                                     System.out.println(nickname + " behind the first car sent his REFUSE");
                                 }
@@ -346,6 +371,7 @@ public abstract class Vehicle extends Agent {
                                 waiting = false;
                                 pass = true;
                                 step = 4;
+                                retry = 1;
                             }
                             else {
                                 informMsg.setContent("DONT_GO");

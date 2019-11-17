@@ -3,13 +3,13 @@ package agents;
 import app.GraphEdge;
 import app.GraphNode;
 
-public class Car extends Vehicle{
+public class RushedCar extends Vehicle{
     /**
      * Car constructor
      * @param startingNode      start
      * @param targetNode        end
      */
-    public Car(GraphNode startingNode, GraphNode targetNode){
+    public RushedCar(GraphNode startingNode, GraphNode targetNode){
         super(startingNode, targetNode);
     }
 
@@ -20,7 +20,7 @@ public class Car extends Vehicle{
      * @param priorityPoints    priority points
      * @param maxTries          max tries
      */
-    public Car(GraphNode startingNode, GraphNode targetNode, int priorityPoints, int maxTries){
+    public RushedCar(GraphNode startingNode, GraphNode targetNode, int priorityPoints, int maxTries){
         super(startingNode, targetNode, priorityPoints, maxTries);
     }
 
@@ -30,21 +30,20 @@ public class Car extends Vehicle{
      */
     @Override
     int choosePriorityPoints(){
-
         int TlLeft = 0;
 
         if(retry > maxTries)
-           retry = maxTries;
+            retry = maxTries;
 
         for(int i = this.currentEdge; i < this.path.length; i++){
-           GraphEdge edge = path[i];
-           if(edge.getEnd().getTl() != null)
-               TlLeft++;
+            GraphEdge edge = path[i];
+            if(edge.getEnd().getTl() != null)
+                TlLeft++;
         }
 
         if(TlLeft == 1)
-           return priorityPoints;
+            return priorityPoints;
         else
-           return (retry*priorityPoints)/(TlLeft*maxTries);
+            return (retry*priorityPoints)/maxTries;
     }
 }
