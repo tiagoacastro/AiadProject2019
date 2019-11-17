@@ -1,5 +1,6 @@
 package agents;
 
+import app.Graph;
 import app.GraphEdge;
 import app.GraphNode;
 
@@ -9,8 +10,8 @@ public class Car extends Vehicle{
      * @param startingNode      start
      * @param targetNode        end
      */
-    public Car(GraphNode startingNode, GraphNode targetNode){
-        super(startingNode, targetNode);
+    public Car(int startingNode, int targetNode){
+        super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode));
     }
 
     /**
@@ -20,8 +21,8 @@ public class Car extends Vehicle{
      * @param priorityPoints    priority points
      * @param maxTries          max tries
      */
-    public Car(GraphNode startingNode, GraphNode targetNode, int priorityPoints, int maxTries){
-        super(startingNode, targetNode, priorityPoints, maxTries);
+    public Car(int startingNode, int targetNode, int priorityPoints, int maxTries){
+        super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode), priorityPoints, maxTries);
     }
 
     /**
