@@ -210,6 +210,7 @@ public abstract class Vehicle extends Agent {
                         switch (Map.oldMap[aux.y][aux.x]) {
                             case '|':
                             case '-':
+                            case '+':
                                 addBehaviour(new Move());
                                 break;
                             case 'O':
