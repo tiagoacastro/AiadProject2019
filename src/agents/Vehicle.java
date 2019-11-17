@@ -302,6 +302,7 @@ public abstract class Vehicle extends Agent {
 
                                 carsBehind = new ArrayList<>();
                                 carsStillInAuction = new ArrayList<>();
+                                carsStillInAuction.add(getAID());
                                 carsProposedPP = new HashMap<>();
                                 carsProposedPP.put(getAID(), 0);
 
@@ -412,7 +413,7 @@ public abstract class Vehicle extends Agent {
                 case 1:         // First car sends CFP to the cars behind it in the queue
 
                     ACLMessage cfpMsgCar = new ACLMessage(ACLMessage.CFP);
-                    for(int i = 0; i < carsStillInAuction.size(); i++){
+                    for(int i = 1; i < carsStillInAuction.size(); i++){
                         cfpMsgCar.addReceiver(carsStillInAuction.get(i));
                     }
                     cfpMsgCar.setConversationId("car_car_auction");
@@ -424,28 +425,37 @@ public abstract class Vehicle extends Agent {
                     break;
 
 
-                case 2:         // Receive every PROPOSE/REFUSE
+                case 2:         // Receive every PROPOSE/REFUSE and First car chooses the PP
 
                     MessageTemplate proposeTemp = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
                     MessageTemplate refuseTemp = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
                     MessageTemplate bothTemp3 = MessageTemplate.or(proposeTemp, refuseTemp);
 
-                    int i = 0;
+                    // First Car choosing his PP to send
+                    if (retry <= maxTries) {
+                        int tempPP = choosePriorityPoints();
+                        retry++;
+                        lastPriorityPoints = tempPP;
+                        System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
+                    } else {
+                        System.out.println(nickname + " (first car) choose wont send more PP");
+                    }
+                    carsProposedPP.put(getAID(), lastPriorityPoints);
+
+                    int i = 1;
                     while(i < carsStillInAuction.size()){
                         ACLMessage proposeMsg = myAgent.receive(bothTemp3);
 
                         if(proposeMsg != null){
 
+                            carsProposedPP.put(proposeMsg.getSender(), Integer.parseInt(proposeMsg.getContent()));
                             if (proposeMsg.getPerformative() == ACLMessage.PROPOSE) {
 
-                                carsProposedPP.put(proposeMsg.getSender(), Integer.parseInt(proposeMsg.getContent()));
                                 i++;
                                 System.out.println(nickname + " received the PROPOSE (" + proposeMsg.getContent() + ") from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
                             else if(proposeMsg.getPerformative() == ACLMessage.REFUSE){
 
-                                carsProposedPP.put(proposeMsg.getSender(), Integer.parseInt(proposeMsg.getContent()));
-                                carsStillInAuction.remove(proposeMsg.getSender());
                                 System.out.println(nickname + " received the REFUSE from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
                         }
@@ -480,7 +490,7 @@ public abstract class Vehicle extends Agent {
                     }
                     else{
 
-                        if(carsStillInAuction.size() == 0){
+                        if(carsStillInAuction.size() == 1){
 
                             ACLMessage replyToTL = new ACLMessage(ACLMessage.REFUSE);
                             replyToTL.setConversationId("car_tl_auction");
