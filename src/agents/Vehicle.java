@@ -193,9 +193,6 @@ public abstract class Vehicle extends Agent {
             if(pos.x == path[path.length-1].getEnd().getX() && pos.y == path[path.length-1].getEnd().getY())
                 myAgent.doDelete();
 
-            if(Map.oldMap[pos.y][pos.x] == 'O')
-                pass = false;
-
             try {
                 if(waiting)
                     Map.newMap[pos.y][pos.x] = 'X';
@@ -203,7 +200,8 @@ public abstract class Vehicle extends Agent {
                     Pos aux = new Pos(pos.x,pos.y);
                     chooseNext(aux);
 
-                    if(Map.oldMap[aux.y][aux.x] == 'O' && pass){
+                    if(Map.originalMap[aux.y][aux.x] == 'O' && pass){
+                        pass = false;
                         addBehaviour(new Move());
                     } else {
                         while (Map.oldMap[aux.y][aux.x] == 'X')
