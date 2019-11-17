@@ -48,12 +48,6 @@ public class Main {
     private static void startJADE(){
         runtime = Runtime.instance();
         mainContainer = runtime.createMainContainer(new ProfileImpl());
-        try {
-            AgentController ac = mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma());
-            ac.start();
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
     }
 
 
