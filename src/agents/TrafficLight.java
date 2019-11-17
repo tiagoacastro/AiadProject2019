@@ -35,7 +35,7 @@ public class TrafficLight extends Agent {
         registerYellowPages();
 
         addBehaviour(new Listen());
-        addBehaviour(new StartAuction(this, Main.tick * 10));
+        addBehaviour(new StartAuction(this, Main.tick * 8));
     }
 
     /*

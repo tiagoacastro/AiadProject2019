@@ -11,6 +11,7 @@ public class GraphNode {
     private int id;
     String name;
     public LinkedList<GraphEdge> edges;
+    public LinkedList<GraphEdge> edgesLeadingUp;
     private int x;
     private int y;
     private boolean visited;
@@ -20,6 +21,7 @@ public class GraphNode {
         this.id = id;
         this.name = name;
         this.edges = new LinkedList<>();
+        this.edgesLeadingUp = new LinkedList<>();
         this.x = x;
         this.y = y;
         this.visited = false;
@@ -62,12 +64,7 @@ public class GraphNode {
     }
 
     public int numberOfEdgesIn(){
-        int n = 0;
-        for(GraphEdge edge : edges){
-            if(edge.isDestination(this))
-                n++;
-        }
-        return n;
+        return edgesLeadingUp.size();
     }
 
     public void addTl(TrafficLight tl){

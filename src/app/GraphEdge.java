@@ -62,10 +62,6 @@ public class GraphEdge implements Comparable<GraphEdge>{
         else return -1;
     }
 
-    public boolean isDestination(GraphNode node){
-        return source == node;
-    }
-
     public AID getTlAid(){
         return destination.getTl().getAid();
     }
