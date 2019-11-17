@@ -23,6 +23,8 @@ public class Car extends Vehicle{
      */
     private int priorityPoints;
 
+    private boolean pass = false;
+
     /*
         Car Constructor
      */
@@ -127,18 +129,27 @@ public class Car extends Vehicle{
                 Pos aux = new Pos(pos.x,pos.y);
                 chooseNext(aux);
 
-                while(Map.oldMap[aux.y][aux.x] == 'X')
-                    chooseNext(aux);
+                if(Map.oldMap[aux.y][aux.x] == 'O' && pass){
+                    pass = false;
+                    addBehaviour(new Move());
+                } else {
+                    while(Map.oldMap[aux.y][aux.x] == 'X')
+                        chooseNext(aux);
 
-                switch(Map.oldMap[aux.y][aux.x]){
-                    case '|': case '-':
-                        addBehaviour(new Move());
-                        break;
-                    case 'O':
-                        addBehaviour(new Inform());
-                        Map.newMap[pos.y][pos.x] = 'X';
-                        waiting = true;
-                        break;
+                    switch(Map.oldMap[aux.y][aux.x]){
+                        case '|': case '-':
+                            addBehaviour(new Move());
+                            break;
+                        case 'O':
+                            if(pass){
+                                addBehaviour(new Move());
+                            } else {
+                                addBehaviour(new Inform());
+                                Map.newMap[pos.y][pos.x] = 'X';
+                                waiting = true;
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -285,8 +296,8 @@ public class Car extends Vehicle{
                                 System.out.println(nickname + " sent INFORM to GO to the ones behind him");
 
                                 priorityPoints -= lastPriorityPoints;
-                                currentEdge++;
                                 waiting = false;
+                                pass = true;
                                 step = 4;
                             }
                             else {
@@ -304,8 +315,8 @@ public class Car extends Vehicle{
                             if((message.getContent()).equals("GO")){
 
                                 System.out.println(nickname + " received INFORM to GO");
-                                currentEdge++;
                                 waiting = false;
+                                pass = true;
                                 priorityPoints -= lastPriorityPoints;
                             }
                             else if((message.getContent()).equals("DONT_GO")){
