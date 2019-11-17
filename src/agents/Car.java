@@ -123,34 +123,42 @@ public class Car extends Vehicle{
 
         @Override
         protected void onTick() {
-            if(waiting)
-                Map.newMap[pos.y][pos.x] = 'X';
-            else {
-                Pos aux = new Pos(pos.x,pos.y);
-                chooseNext(aux);
+            if(pos.x == path[path.length-1].getEnd().getX() && pos.y == path[path.length-1].getEnd().getY())
+                myAgent.doDelete();
 
-                if(Map.oldMap[aux.y][aux.x] == 'O' && pass){
-                    pass = false;
-                    addBehaviour(new Move());
-                } else {
-                    while(Map.oldMap[aux.y][aux.x] == 'X')
-                        chooseNext(aux);
+            try {
+                if(waiting)
+                    Map.newMap[pos.y][pos.x] = 'X';
+                else {
+                    Pos aux = new Pos(pos.x,pos.y);
+                    chooseNext(aux);
 
-                    switch(Map.oldMap[aux.y][aux.x]){
-                        case '|': case '-':
-                            addBehaviour(new Move());
-                            break;
-                        case 'O':
-                            if(pass){
+                    if(Map.oldMap[aux.y][aux.x] == 'O' && pass){
+                        pass = false;
+                        addBehaviour(new Move());
+                    } else {
+                        while (Map.oldMap[aux.y][aux.x] == 'X')
+                            chooseNext(aux);
+
+                        switch (Map.oldMap[aux.y][aux.x]) {
+                            case '|':
+                            case '-':
                                 addBehaviour(new Move());
-                            } else {
-                                addBehaviour(new Inform());
-                                Map.newMap[pos.y][pos.x] = 'X';
-                                waiting = true;
+                                break;
+                            case 'O':
+                                if (pass) {
+                                    addBehaviour(new Move());
+                                } else {
+                                    addBehaviour(new Inform());
+                                    Map.newMap[pos.y][pos.x] = 'X';
+                                    waiting = true;
+                                }
+                                break;
                             }
-                            break;
                     }
                 }
+            } catch(ArrayIndexOutOfBoundsException e){
+                addBehaviour(new Move());
             }
         }
     }
@@ -158,19 +166,11 @@ public class Car extends Vehicle{
     private class Move extends OneShotBehaviour {
         @Override
         public void action(){
-            if(!(pos.x == path[path.length-1].getEnd().getX() && pos.y == path[path.length-1].getEnd().getY())){
+            chooseNext(pos);
+            Map.newMap[pos.y][pos.x] = 'X';
 
-                chooseNext(pos);
-                Map.newMap[pos.y][pos.x] = 'X';
-
-                if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
-
-                    currentEdge++;
-                }
-            }
-            else{
-
-                myAgent.doDelete();
+            if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
+                currentEdge++;
             }
         }
     }
