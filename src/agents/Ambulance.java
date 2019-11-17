@@ -1,5 +1,6 @@
 package agents;
 
+import app.Graph;
 import app.GraphNode;
 
 public class Ambulance extends Vehicle{
@@ -8,8 +9,8 @@ public class Ambulance extends Vehicle{
      * @param startingNode      start
      * @param targetNode        end
      */
-    public Ambulance(GraphNode startingNode, GraphNode targetNode){
-        super(startingNode, targetNode);
+    public Ambulance(int startingNode, int targetNode){
+        super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode));
     }
 
     /**
@@ -19,8 +20,8 @@ public class Ambulance extends Vehicle{
      * @param priorityPoints    priority points
      * @param maxTries          max tries
      */
-    public Ambulance(GraphNode startingNode, GraphNode targetNode, int priorityPoints, int maxTries){
-        super(startingNode, targetNode, priorityPoints, maxTries);
+    public Ambulance(int startingNode, int targetNode, int priorityPoints, int maxTries){
+        super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode), priorityPoints, maxTries);
     }
 
     /**
