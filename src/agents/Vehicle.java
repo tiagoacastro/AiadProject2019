@@ -347,7 +347,8 @@ public abstract class Vehicle extends Agent {
                                     System.out.println(nickname + " behind the first car sent his PROPOSE (" + tempPP + ")");
                                 } else {
                                     replyToFirstCarMsg.setPerformative(ACLMessage.REFUSE);
-                                    System.out.println(nickname + " behind the first car sent his REFUSE");
+                                    replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
+                                    System.out.println(nickname + " behind the first car sent his REFUSE (" + lastPriorityPoints + ")");
                                 }
 
                                 myAgent.send(replyToFirstCarMsg);
@@ -443,6 +444,7 @@ public abstract class Vehicle extends Agent {
                             }
                             else if(proposeMsg.getPerformative() == ACLMessage.REFUSE){
 
+                                carsProposedPP.put(proposeMsg.getSender(), Integer.parseInt(proposeMsg.getContent()));
                                 carsStillInAuction.remove(proposeMsg.getSender());
                                 System.out.println(nickname + " received the REFUSE from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
@@ -485,7 +487,7 @@ public abstract class Vehicle extends Agent {
                             replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
                             replyToTL.addReceiver(tlAid);
                             myAgent.send(replyToTL);
-                            System.out.println(nickname + " sent the REFUSE to the TL");
+                            System.out.println(nickname + " sent the REFUSE to the TL ");
 
                             step = 0;
                         }
