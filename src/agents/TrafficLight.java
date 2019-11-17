@@ -20,6 +20,7 @@ public class TrafficLight extends Agent {
     private AID aid;
     private ArrayList<AID>[] lanes = new ArrayList[4];
     private ArrayList<AID> lanesStillInAuction;
+    private boolean alternateFlag = true;
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -128,17 +129,28 @@ public class TrafficLight extends Agent {
     }
 
     private class Auction extends Behaviour {
-
-        int i = 0;
+        int i;
         int maxPP = 0;
         AID maxPPLane;
         boolean agreement = false;
 
+        private boolean cond(){
+            if(alternateFlag)
+                return i < lanesStillInAuction.size();
+            else
+                return i > -1;
+        }
+
         @Override
         public void action() {
+            if(alternateFlag)
+                i = 0;
+            else
+                i = lanesStillInAuction.size() - 1;
 
             int step = 0;
-            while(i < lanesStillInAuction.size()){
+
+            while(cond()){
 
                 switch(step){
 
@@ -191,7 +203,11 @@ public class TrafficLight extends Agent {
                             }
 
                             step = 0;
-                            i++;
+
+                            if(alternateFlag)
+                                i++;
+                            else
+                                i--;
                         }
                         else {
 
@@ -231,11 +247,8 @@ public class TrafficLight extends Agent {
                 rejectPropMsg.setReplyWith("reject_proposal" + System.currentTimeMillis());
                 myAgent.send(rejectPropMsg);
 
+                alternateFlag = !alternateFlag;
                 agreement = true;
-            }
-            else{
-
-                i = 0;
             }
         }
 
