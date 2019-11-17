@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class TrafficLight extends Agent {
     private AID aid;
-    private ArrayList<AID>[] cars = new ArrayList[4];
-    private boolean alternateLane = true;
+    private ArrayList<AID>[] lanes = new ArrayList[4];
+    private ArrayList<AID> lanesStillInAuction;
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -28,7 +28,7 @@ public class TrafficLight extends Agent {
         this.aid = getAID();
 
         for (int i = 0; i < 4; i++) {
-            cars[i] = new ArrayList<>();
+            lanes[i] = new ArrayList<>();
         }
 
         registerYellowPages();
@@ -42,7 +42,7 @@ public class TrafficLight extends Agent {
      */
     protected void takeDown(){
 
-        System.out.println("TrafficLight-agent has terminated!");
+        System.out.println(getAID().getName().substring(0, getAID().getName().indexOf("@")) + " has terminated!");
     }
 
     public AID getAid(){
@@ -83,20 +83,20 @@ public class TrafficLight extends Agent {
 
                 switch (msg.getContent()) {
                     case "NORTH":
-                        if(!cars[0].contains(msg.getSender()))
-                            cars[0].add(msg.getSender());
+                        if(!lanes[0].contains(msg.getSender()))
+                            lanes[0].add(msg.getSender());
                         break;
                     case "EAST":
-                        if(!cars[1].contains(msg.getSender()))
-                            cars[1].add(msg.getSender());
+                        if(!lanes[1].contains(msg.getSender()))
+                            lanes[1].add(msg.getSender());
                         break;
                     case "SOUTH":
-                        if(!cars[2].contains(msg.getSender()))
-                            cars[2].add(msg.getSender());
+                        if(!lanes[2].contains(msg.getSender()))
+                            lanes[2].add(msg.getSender());
                         break;
                     case "WEST":
-                        if(!cars[3].contains(msg.getSender()))
-                            cars[3].add(msg.getSender());
+                        if(!lanes[3].contains(msg.getSender()))
+                            lanes[3].add(msg.getSender());
                         break;
                 }
             } else {
@@ -107,7 +107,6 @@ public class TrafficLight extends Agent {
 
     private class StartAuction extends TickerBehaviour {
 
-
         public StartAuction(Agent a, long period) {
             super(a, period);
         }
@@ -115,52 +114,57 @@ public class TrafficLight extends Agent {
         @Override
         protected void onTick() {
 
+            lanesStillInAuction = new ArrayList<>();
+            for(int i = 0; i < lanes.length; i++){
+
+                if(lanes[i].size() != 0){
+
+                    lanesStillInAuction.add(lanes[i].get(0));
+                }
+            }
+
             addBehaviour(new Auction());
         }
     }
 
     private class Auction extends Behaviour {
 
-
         int i = 0;
-        int lanesInAuction = 0;
-        int maxPriorityPoints = 0;
+        int maxPP = 0;
+        AID maxPPLane;
+        boolean agreement = false;
 
         @Override
         public void action() {
 
             int step = 0;
-            while(i < cars.length){
+            while(i < lanesStillInAuction.size()){
 
                 switch(step){
 
                     case 0:
 
-                        if(cars[i].size() != 0){
+                        ACLMessage cfpMsg = new ACLMessage(ACLMessage.CFP);
+                        cfpMsg.addReceiver(lanesStillInAuction.get(i));
+                        cfpMsg.setConversationId("tl_car_auction");
+                        cfpMsg.setReplyWith("cfp" + System.currentTimeMillis());
 
-                            lanesInAuction++;
-
-                            ACLMessage cfpMsg = new ACLMessage(ACLMessage.CFP);
-                            cfpMsg.addReceiver(cars[i].get(0));
-                            cfpMsg.setConversationId("tl_car_auction");
-                            cfpMsg.setReplyWith("cfp" + System.currentTimeMillis());
-
-                            String content = maxPriorityPoints + "|";
-                            for (int k = 1; k < cars[i].size(); k++) {
-
-                                content += cars[i].get(k).toString() + "|";
+                        int lane = 0;
+                        for(; lane < lanes.length; lane++){
+                            if(lanes[lane].size() != 0) {
+                                if ((lanesStillInAuction.get(i)).equals(lanes[lane].get(0)))
+                                    break;
                             }
-
-                            cfpMsg.setContent(content);
-                            myAgent.send(cfpMsg);
-                            System.out.println("TL sent CFP to one of the first cars");
-
-                            step = 1;
                         }
-                        else{
-
-                            i++;
+                        String content = maxPP + "|";
+                        for (int k = 1; k < lanes[lane].size(); k++) {
+                            content += lanes[lane].get(k).toString() + "|";
                         }
+                        cfpMsg.setContent(content);
+                        myAgent.send(cfpMsg);
+                        System.out.println("TL sent CFP to " + lanesStillInAuction.get(i).getName().substring(0, lanesStillInAuction.get(0).getName().indexOf('@')));
+
+                        step = 1;
                         break;
 
 
@@ -172,21 +176,20 @@ public class TrafficLight extends Agent {
 
                         ACLMessage reply = myAgent.receive(bothTemp);
 
-                        if (reply != null) {
+                        if(reply != null) {
 
-                            if (reply.getPerformative() == ACLMessage.PROPOSE) {
+                            if(reply.getPerformative() == ACLMessage.PROPOSE) {
 
-                                int proposedPP = Integer.parseInt(reply.getContent());
-                                if (proposedPP > maxPriorityPoints) {
+                                maxPP = Integer.parseInt(reply.getContent());
+                                maxPPLane = reply.getSender();
 
-                                    maxPriorityPoints = proposedPP;
-                                }
+                                System.out.println("TL received PROPOSE (" + reply.getContent() + ") by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
+                            } else if(reply.getPerformative() == ACLMessage.REFUSE) {
 
-                                System.out.println("TL received proposal to increase the max PP");
-                            } else if (reply.getPerformative() == ACLMessage.REFUSE) {
-
-                                System.out.println("TL received refusal to increase the max PP");
+                                lanesStillInAuction.remove(reply.getSender());
+                                System.out.println("TL received REFUSE by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
                             }
+
                             step = 0;
                             i++;
                         }
@@ -198,12 +201,48 @@ public class TrafficLight extends Agent {
                         break;
                 }
             }
+
+            if(lanesStillInAuction.size() == 1){
+
+                ACLMessage acceptPropMsg = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+                acceptPropMsg.addReceiver(lanesStillInAuction.get(0));
+                acceptPropMsg.setConversationId("accept_proposal_auction");
+                acceptPropMsg.setReplyWith("accept_proposal" + System.currentTimeMillis());
+                System.out.println("TL sent ACCEPT_PROPOSAL to " + lanesStillInAuction.get(0).getName());
+                myAgent.send(acceptPropMsg);
+
+
+                ACLMessage rejectPropMsg = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+                for(int j = 0; j < lanes.length; j++){
+
+                    if(lanes[j].size() != 0){
+                        if(!((lanes[j].get(0).equals(lanesStillInAuction.get(0))))){
+
+                            rejectPropMsg.addReceiver(lanes[j].get(0));
+                            System.out.println("TL sent REJECT_PROPOSAL to " + lanes[j].get(0).getName());
+                        }
+                        else{
+
+                            lanes[j] = new ArrayList<>();
+                        }
+                    }
+                }
+                rejectPropMsg.setConversationId("reject_proposal_auction");
+                rejectPropMsg.setReplyWith("reject_proposal" + System.currentTimeMillis());
+                myAgent.send(rejectPropMsg);
+
+                agreement = true;
+            }
+            else{
+
+                i = 0;
+            }
         }
 
         @Override
         public boolean done() {
 
-            return (i == 4);
+            return agreement;
         }
     }
 

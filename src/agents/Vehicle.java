@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 
 public abstract class Vehicle extends Agent {
+
+    String nickname;
     /*
         Vehicle position
      */

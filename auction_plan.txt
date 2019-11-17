@@ -1,15 +1,33 @@
-	CAR			TL
+Alterar:
 
-				cyclic behaviour (listen)
-	chega
-	manda msg
-				guarda a info do carro
+    FIRST CAR
+DONE        -> Criar um HashMap<AID, proposedPriorityPoints>
+DONE        -> Precisa de saber quais são os carros em especifico que ainda estão em negociação aka nao recebeu REFUSE destes
+                (eg: 1, 2, 4 -> recebe REFUSE do 2 -> 1, 4)
+-> Também fornecer os PPs dele
+DONE        -> Depois de receber todas as PROPOSEs
+                if(SUM(proposedPriorityPoints) > currentMaxPriorityPoints)
+                    -> Enviar PROPOSE à TL e aguardar
+                else
+                    -> Enviar msg aos carros atrás com outro CFP
+DONE        -> RECEBER O PASS/DONT PASS
 
-			...
+
+    CAR BEHIND
+DONE        -> Guardar o valor do ultimo PP que enviaram (lastProposedPriorityPoints)
+DONE        -> Depois de receber um CFP
+                if(choosePriorityPoints() > lastProposedPriorityPoints)
+                    -> Enviar PROPOSE ao FIRST CAR e aguardar
+                else
+                    -> Enviar REFUSE ao FIRST CAR e aguardar
+DONE        -> RECEBER O PASS/DONT PASS
 
 
-				(20seg 20seg inicia uma auction)
-				mandar msg ao da frente com os AID de todos + valor em que está o leilão
 
-	frente manda a msg a todos os da fila
-	sai do leilao quando tiver batido/todos tiverem dado REJECT_PROPOSAL
+
+
+    TRAFFIC LIGHTS
+DONE        -> Precisa de saber quais são as lanes em especifico que estão com carros E ainda em negociação aka nao recebeu REFUSE desta
+                (eg: 1, 2, 4 -> recebe REFUSE da 2 -> 1, 4)
+DONE        -> Precisa de enviar msg a dizer PASS e DONT PASS quando já só houver 1 lane em negociação (aka todas as outras já deram REFUSE)
+-> Precisa de alterar a ordem a cada auction nova
