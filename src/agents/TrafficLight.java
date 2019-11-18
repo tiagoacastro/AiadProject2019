@@ -265,6 +265,9 @@ public class TrafficLight extends Agent {
         @Override
         public boolean done() {
 
+            if(agreement)
+                auction = false;
+
             return agreement;
         }
     }
