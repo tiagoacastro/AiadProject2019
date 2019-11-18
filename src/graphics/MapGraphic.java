@@ -20,6 +20,7 @@ public class MapGraphic extends JPanel {
     private BufferedImage simple_car1;
     private BufferedImage simple_car2;
     private BufferedImage tf;
+    private BufferedImage clear;
 
     public static Character[][] roadMap = new Character[][]{
             {' ', ' ', ' ', ' ', ' ', '|', ' ', ' ', ' ', ' ', ' ', '|', ' ', ' ', ' ', ' ', ' ', '|', ' ', ' '},
@@ -60,6 +61,7 @@ public class MapGraphic extends JPanel {
         File file4 = new File("./resources/simple_car1.jpg");
         File file5 = new File("./resources/simple_car2.jpg");
         File file6 = new File("./resources/tf.jpg");
+        File file7 = new File("./resources/clear.jpg");
 
         try{
             road = ImageIO.read(file);
@@ -69,6 +71,7 @@ public class MapGraphic extends JPanel {
             simple_car1 = ImageIO.read(file4);
             simple_car2 = ImageIO.read(file5);
             tf = ImageIO.read(file6);
+            clear = ImageIO.read(file7);
 
         }catch(IOException e){
             e.printStackTrace();
@@ -100,10 +103,14 @@ public class MapGraphic extends JPanel {
                         else {
                             g.drawImage(simple_car1, i*simple_car1.getWidth(), j*simple_car1.getHeight(), null);
                         }
-
                         break;
-                    case '+':
+
+                    case 'O':
                         g.drawImage(tf, i*tf.getWidth(), j*tf.getHeight(), null);
+                        break;
+
+                    case '+':
+                        g.drawImage(clear, i*clear.getWidth(), j*clear.getHeight(), null);
                         break;
                 }
 
