@@ -85,7 +85,7 @@ public class TrafficLight extends Agent {
             if (msg != null) {
 
                 if(auction){
-                    ACLMessage rejectMsg = new ACLMessage(ACLMessage.REFUSE);
+                    ACLMessage rejectMsg = new ACLMessage(ACLMessage.DISCONFIRM);
                     rejectMsg.addReceiver(msg.getSender());
                     rejectMsg.setConversationId("refuse_inform");
                     rejectMsg.setReplyWith("refuse_inform" + System.currentTimeMillis()); // To ensure unique values
@@ -110,7 +110,7 @@ public class TrafficLight extends Agent {
                             break;
                     }
 
-                    ACLMessage acceptMsg = new ACLMessage(ACLMessage.AGREE);
+                    ACLMessage acceptMsg = new ACLMessage(ACLMessage.CONFIRM);
                     acceptMsg.addReceiver(msg.getSender());
                     acceptMsg.setConversationId("accept_inform");
                     acceptMsg.setReplyWith("accept_inform" + System.currentTimeMillis()); // To ensure unique values

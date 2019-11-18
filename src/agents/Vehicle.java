@@ -206,10 +206,10 @@ public abstract class Vehicle extends Agent {
                         pass = false;
                         addBehaviour(new Move());
                     } else {
-                        while (Map.oldMap[aux.y][aux.x] == 'X')
+                        while (Map.originalMap[aux.y][aux.x] != 'O' && Map.oldMap[aux.y][aux.x] == 'X')
                             chooseNext(aux);
 
-                        switch (Map.oldMap[aux.y][aux.x]) {
+                        switch (Map.originalMap[aux.y][aux.x]) {
                             case '|':
                             case '-':
                             case '+':
@@ -268,14 +268,14 @@ public abstract class Vehicle extends Agent {
                     step = 1;
                     break;
                 case 1:
-                    MessageTemplate msgTempAgree = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
-                    MessageTemplate msgTempRefuse = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
+                    MessageTemplate msgTempAgree = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
+                    MessageTemplate msgTempRefuse = MessageTemplate.MatchPerformative(ACLMessage.DISCONFIRM);
                     MessageTemplate bothTemp = MessageTemplate.or(msgTempAgree, msgTempRefuse);
 
                     ACLMessage message = myAgent.receive(bothTemp);
 
                     if(message != null) {
-                        if (message.getPerformative() == ACLMessage.AGREE) {
+                        if (message.getPerformative() == ACLMessage.CONFIRM) {
                             addBehaviour(new Auction());
                             step = 2;
                             System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
