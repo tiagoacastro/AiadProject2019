@@ -105,8 +105,10 @@ public abstract class Vehicle extends Agent {
     @Override
     protected void setup(){
         this.nickname = getAID().getName().substring(0, getAID().getName().indexOf("@"));
-        Map.newMap[pos.y][pos.x] = nickname.charAt(7);
+        Map.newMap[pos.y][pos.x] = 'X';
+
         addBehaviour(new Decide(this, Main.tick));
+
     }
 
     /**
@@ -195,7 +197,7 @@ public abstract class Vehicle extends Agent {
 
             try {
                 if(waiting)
-                    Map.newMap[pos.y][pos.x] = nickname.charAt(7);
+                    Map.newMap[pos.y][pos.x] = 'X';
                 else {
                     Pos aux = new Pos(pos.x,pos.y);
                     chooseNext(aux);
@@ -204,7 +206,7 @@ public abstract class Vehicle extends Agent {
                         pass = false;
                         addBehaviour(new Move());
                     } else {
-                        while (Map.oldMap[aux.y][aux.x] == '0' || Map.oldMap[aux.y][aux.x] == '1' || Map.oldMap[aux.y][aux.x] == '2' || Map.oldMap[aux.y][aux.x] == '3'|| Map.oldMap[aux.y][aux.x] == '4'|| Map.oldMap[aux.y][aux.x] == '5'|| Map.oldMap[aux.y][aux.x] == '6'|| Map.oldMap[aux.y][aux.x] == '7'|| Map.oldMap[aux.y][aux.x] == '8'|| Map.oldMap[aux.y][aux.x] == '9')
+                        while (Map.oldMap[aux.y][aux.x] == 'X')
                             chooseNext(aux);
 
                         switch (Map.oldMap[aux.y][aux.x]) {
@@ -218,7 +220,7 @@ public abstract class Vehicle extends Agent {
                                     addBehaviour(new Move());
                                 } else {
                                     addBehaviour(new Inform());
-                                    Map.newMap[pos.y][pos.x] = nickname.charAt(7);
+                                    Map.newMap[pos.y][pos.x] = 'X';
                                     waiting = true;
                                 }
                                 break;
@@ -238,7 +240,7 @@ public abstract class Vehicle extends Agent {
         @Override
         public void action(){
             chooseNext(pos);
-            Map.newMap[pos.y][pos.x] = nickname.charAt(7);
+            Map.newMap[pos.y][pos.x] = 'X';
 
             if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
                 currentEdge++;
