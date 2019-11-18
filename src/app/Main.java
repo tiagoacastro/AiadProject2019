@@ -112,6 +112,8 @@ public class Main {
             String st;
             int i = 0;
             while ((st = br.readLine()) != null) {
+                if(st.replace(" ", "").equals(""))
+                    continue;
                 String[] agentsInfo = st.split(" ");
 
                 Vehicle agent;
