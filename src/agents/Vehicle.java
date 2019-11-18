@@ -269,7 +269,7 @@ public abstract class Vehicle extends Agent {
     private class Auction extends Behaviour {
 
         int step = 0;
-        ArrayList<AID> carsBehind;
+        ArrayList<AID> carsBehind = new ArrayList<>();
         ArrayList<AID> carsStillInAuction;
         HashMap<AID, Integer> carsProposedPP;
         int currentMaxPriorityPoints = 0;
@@ -300,16 +300,16 @@ public abstract class Vehicle extends Agent {
 
                             if (content != null) {                // First car of the queue
 
-                                carsBehind = new ArrayList<>();
+                                this.carsBehind = new ArrayList<AID>();
                                 carsStillInAuction = new ArrayList<>();
                                 carsStillInAuction.add(getAID());
                                 carsProposedPP = new HashMap<>();
                                 carsProposedPP.put(getAID(), 0);
 
-                                System.out.println("First car (" + nickname + ") received the TL's CFP");
                                 tlAid = message.getSender();
 
                                 currentMaxPriorityPoints = Integer.parseInt(content.substring(0, content.indexOf("|")));
+                                System.out.println("First car (" + nickname + ") received the TL's CFP (" + currentMaxPriorityPoints + ")");
                                 String aids = content.substring(content.indexOf("|") + 1);
 
                                 int posX = aids.indexOf('|');
@@ -325,7 +325,7 @@ public abstract class Vehicle extends Agent {
                                         e.printStackTrace();
                                     }
 
-                                    carsBehind.add(tempAid);
+                                    this.carsBehind.add(tempAid);
                                     carsStillInAuction.add(tempAid);
                                     carsProposedPP.put(tempAid, 0);
                                     aids = aids.substring(posX + 1);
@@ -362,8 +362,9 @@ public abstract class Vehicle extends Agent {
 
                             System.out.println(nickname + " received ACCEPT_PROPOSAL/REJECT_PROPOSAL from the TL");
                             ACLMessage informMsg = new ACLMessage(ACLMessage.INFORM);
-                            for(int i = 0; i < carsBehind.size(); i++){
-                                informMsg.addReceiver(carsBehind.get(i));
+
+                            for(int i = 0; i < this.carsBehind.size(); i++){
+                                informMsg.addReceiver(this.carsBehind.get(i));
                             }
 
                             if(message.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
@@ -380,6 +381,7 @@ public abstract class Vehicle extends Agent {
                                 informMsg.setContent("DONT_GO");
                                 System.out.println(nickname + " sent INFORM to DONT_GO to the ones behind him");
                                 lastPriorityPoints = 0;
+                                retry = 1;
                             }
                             informMsg.setConversationId("inform_auction");
                             informMsg.setReplyWith("inform" + System.currentTimeMillis());
@@ -438,7 +440,7 @@ public abstract class Vehicle extends Agent {
                         lastPriorityPoints = tempPP;
                         System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
                     } else {
-                        System.out.println(nickname + " (first car) choose wont send more PP");
+                        System.out.println(nickname + " (first car) choose wont send more PP (retry:" + retry + ")");
                     }
                     carsProposedPP.put(getAID(), lastPriorityPoints);
 

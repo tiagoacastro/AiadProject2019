@@ -72,7 +72,7 @@ public class Map extends JFrame implements Runnable{
             }
             System.out.print('\n');
         }
-        System.out.print('\n');
+        System.out.print("\n\n\n");
         copyMap(newMap, oldMap);
         copyMap(originalMap, newMap);
 

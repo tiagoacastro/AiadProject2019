@@ -174,13 +174,16 @@ public class TrafficLight extends Agent {
                                     break;
                             }
                         }
-                        String content = maxPP + "|";
-                        for (int k = 1; k < lanes[lane].size(); k++) {
-                            content += lanes[lane].get(k).toString() + "|";
+                        if(lane < 4){
+
+                            String content = maxPP + "|";
+                            for (int k = 1; k < lanes[lane].size(); k++) {
+                                content += lanes[lane].get(k).toString() + "|";
+                            }
+                            cfpMsg.setContent(content);
+                            myAgent.send(cfpMsg);
+                            System.out.println(nickname + " sent CFP to " + lanesStillInAuction.get(i).getName().substring(0, lanesStillInAuction.get(0).getName().indexOf('@')));
                         }
-                        cfpMsg.setContent(content);
-                        myAgent.send(cfpMsg);
-                        System.out.println(nickname + " sent CFP to " + lanesStillInAuction.get(i).getName().substring(0, lanesStillInAuction.get(0).getName().indexOf('@')));
 
                         step = 1;
                         break;
