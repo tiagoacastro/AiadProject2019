@@ -105,7 +105,7 @@ public abstract class Vehicle extends Agent {
     @Override
     protected void setup(){
         this.nickname = getAID().getName().substring(0, getAID().getName().indexOf("@"));
-        Map.newMap[pos.y][pos.x] = 'X';
+        Map.newMap[pos.y][pos.x] = nickname.charAt(7);
         addBehaviour(new Decide(this, Main.tick));
     }
 
@@ -195,7 +195,7 @@ public abstract class Vehicle extends Agent {
 
             try {
                 if(waiting)
-                    Map.newMap[pos.y][pos.x] = 'X';
+                    Map.newMap[pos.y][pos.x] = nickname.charAt(7);
                 else {
                     Pos aux = new Pos(pos.x,pos.y);
                     chooseNext(aux);
@@ -204,7 +204,7 @@ public abstract class Vehicle extends Agent {
                         pass = false;
                         addBehaviour(new Move());
                     } else {
-                        while (Map.oldMap[aux.y][aux.x] == 'X')
+                        while (Map.oldMap[aux.y][aux.x] == '0' || Map.oldMap[aux.y][aux.x] == '1' || Map.oldMap[aux.y][aux.x] == '2' || Map.oldMap[aux.y][aux.x] == '3'|| Map.oldMap[aux.y][aux.x] == '4'|| Map.oldMap[aux.y][aux.x] == '5'|| Map.oldMap[aux.y][aux.x] == '6'|| Map.oldMap[aux.y][aux.x] == '7'|| Map.oldMap[aux.y][aux.x] == '8'|| Map.oldMap[aux.y][aux.x] == '9')
                             chooseNext(aux);
 
                         switch (Map.oldMap[aux.y][aux.x]) {
@@ -218,7 +218,7 @@ public abstract class Vehicle extends Agent {
                                     addBehaviour(new Move());
                                 } else {
                                     addBehaviour(new Inform());
-                                    Map.newMap[pos.y][pos.x] = 'X';
+                                    Map.newMap[pos.y][pos.x] = nickname.charAt(7);
                                     waiting = true;
                                 }
                                 break;
@@ -238,7 +238,7 @@ public abstract class Vehicle extends Agent {
         @Override
         public void action(){
             chooseNext(pos);
-            Map.newMap[pos.y][pos.x] = 'X';
+            Map.newMap[pos.y][pos.x] = nickname.charAt(7);
 
             if(pos.x == path[currentEdge].getEnd().getX() && pos.y == path[currentEdge].getEnd().getY()){
                 currentEdge++;
@@ -375,14 +375,13 @@ public abstract class Vehicle extends Agent {
                                 waiting = false;
                                 pass = true;
                                 step = 4;
-                                retry = 1;
                             }
                             else {
                                 informMsg.setContent("DONT_GO");
                                 System.out.println(nickname + " sent INFORM to DONT_GO to the ones behind him");
                                 lastPriorityPoints = 0;
-                                retry = 1;
                             }
+                            retry = 1;
                             informMsg.setConversationId("inform_auction");
                             informMsg.setReplyWith("inform" + System.currentTimeMillis());
                             myAgent.send(informMsg);
@@ -403,6 +402,7 @@ public abstract class Vehicle extends Agent {
                                 lastPriorityPoints = 0;
                                 step = 0;
                             }
+                            retry = 1;
                         }
                     }
                     else{
@@ -439,10 +439,11 @@ public abstract class Vehicle extends Agent {
                         retry++;
                         lastPriorityPoints = tempPP;
                         System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
+                        carsProposedPP.put(getAID(), lastPriorityPoints);
                     } else {
+                        carsStillInAuction.remove(getAID());
                         System.out.println(nickname + " (first car) choose wont send more PP (retry:" + retry + ")");
                     }
-                    carsProposedPP.put(getAID(), lastPriorityPoints);
 
                     int i = 1;
                     while(i < carsStillInAuction.size()){
@@ -458,6 +459,7 @@ public abstract class Vehicle extends Agent {
                             }
                             else if(proposeMsg.getPerformative() == ACLMessage.REFUSE){
 
+                                carsStillInAuction.remove(proposeMsg.getSender());
                                 System.out.println(nickname + " received the REFUSE from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
                         }
@@ -476,8 +478,10 @@ public abstract class Vehicle extends Agent {
                     int totalProposedPP = 0;
                     for (Integer value : carsProposedPP.values()) {
 
+                        System.out.println(carsProposedPP.toString());
                         totalProposedPP += value;
                     }
+                    System.out.println("totalProposedPP: " + totalProposedPP);
 
                     if(totalProposedPP > currentMaxPriorityPoints){
 
