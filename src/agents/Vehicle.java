@@ -251,17 +251,46 @@ public abstract class Vehicle extends Agent {
     /**
      * Informs the traffic light that the vehicle is waiting for an auction
      */
-    private class Inform extends OneShotBehaviour {
+    private class Inform extends Behaviour {
+        private int step = 0;
+
         @Override
         public void action(){
-            ACLMessage informMsg = new ACLMessage(ACLMessage.INFORM);
-            informMsg.addReceiver(path[currentEdge].getTlAid());
-            informMsg.setConversationId("inform");
-            informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
-            informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
-            myAgent.send(informMsg);
+            switch(step){
+                case 0:
+                    ACLMessage informMsg = new ACLMessage(ACLMessage.INFORM);
+                    informMsg.addReceiver(path[currentEdge].getTlAid());
+                    informMsg.setConversationId("inform");
+                    informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
+                    informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
+                    myAgent.send(informMsg);
 
-            addBehaviour(new Auction());
+                    step = 1;
+                    break;
+                case 1:
+                    MessageTemplate msgTempAgree = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
+                    MessageTemplate msgTempRefuse = MessageTemplate.MatchPerformative(ACLMessage.REFUSE);
+                    MessageTemplate bothTemp = MessageTemplate.or(msgTempAgree, msgTempRefuse);
+
+                    ACLMessage message = myAgent.receive(bothTemp);
+
+                    if(message != null) {
+                        if (message.getPerformative() == ACLMessage.AGREE) {
+                            addBehaviour(new Auction());
+                            step = 2;
+                            System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
+                        } else {
+                            step = 0;
+                            System.out.println("REFUSED INFORM FROM " + nickname + "\n");
+                        }
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public boolean done() {
+            return step == 2;
         }
     }
 
@@ -498,7 +527,7 @@ public abstract class Vehicle extends Agent {
                     }
                     else{
 
-                        if(carsStillInAuction.size() == 1){
+                        if(carsStillInAuction.size() == 0){
 
                             ACLMessage replyToTL = new ACLMessage(ACLMessage.REFUSE);
                             replyToTL.setConversationId("car_tl_auction");

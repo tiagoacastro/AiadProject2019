@@ -29,7 +29,7 @@ public class Main {
     /*
         global tick time
      */
-    public static final int tick = 2000;
+    public static final int tick = 1500;
 
     /*
         Main

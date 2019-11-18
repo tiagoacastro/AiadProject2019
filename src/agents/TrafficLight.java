@@ -21,7 +21,7 @@ public class TrafficLight extends Agent {
     private String nickname;
     private ArrayList<AID>[] lanes = new ArrayList[4];
     private ArrayList<AID> lanesStillInAuction;
-    private boolean alternateFlag = true;
+    private boolean auction = false;
 
     /*
         Method that is a placeholder for agent specific startup code.
@@ -84,23 +84,37 @@ public class TrafficLight extends Agent {
 
             if (msg != null) {
 
-                switch (msg.getContent()) {
-                    case "NORTH":
-                        if(!lanes[0].contains(msg.getSender()))
-                            lanes[0].add(msg.getSender());
-                        break;
-                    case "EAST":
-                        if(!lanes[1].contains(msg.getSender()))
-                            lanes[1].add(msg.getSender());
-                        break;
-                    case "SOUTH":
-                        if(!lanes[2].contains(msg.getSender()))
-                            lanes[2].add(msg.getSender());
-                        break;
-                    case "WEST":
-                        if(!lanes[3].contains(msg.getSender()))
-                            lanes[3].add(msg.getSender());
-                        break;
+                if(auction){
+                    ACLMessage rejectMsg = new ACLMessage(ACLMessage.REFUSE);
+                    rejectMsg.addReceiver(msg.getSender());
+                    rejectMsg.setConversationId("refuse_inform");
+                    rejectMsg.setReplyWith("refuse_inform" + System.currentTimeMillis()); // To ensure unique values
+                    myAgent.send(rejectMsg);
+                } else {
+                    switch (msg.getContent()) {
+                        case "NORTH":
+                            if (!lanes[0].contains(msg.getSender()))
+                                lanes[0].add(msg.getSender());
+                            break;
+                        case "EAST":
+                            if (!lanes[1].contains(msg.getSender()))
+                                lanes[1].add(msg.getSender());
+                            break;
+                        case "SOUTH":
+                            if (!lanes[2].contains(msg.getSender()))
+                                lanes[2].add(msg.getSender());
+                            break;
+                        case "WEST":
+                            if (!lanes[3].contains(msg.getSender()))
+                                lanes[3].add(msg.getSender());
+                            break;
+                    }
+
+                    ACLMessage acceptMsg = new ACLMessage(ACLMessage.AGREE);
+                    acceptMsg.addReceiver(msg.getSender());
+                    acceptMsg.setConversationId("accept_inform");
+                    acceptMsg.setReplyWith("accept_inform" + System.currentTimeMillis()); // To ensure unique values
+                    myAgent.send(acceptMsg);
                 }
             } else {
                 block();
@@ -116,18 +130,17 @@ public class TrafficLight extends Agent {
 
         @Override
         protected void onTick() {
-
             lanesStillInAuction = new ArrayList<>();
+
             for(int i = 0; i < lanes.length; i++){
 
                 if(lanes[i].size() != 0){
-
                     lanesStillInAuction.add(lanes[i].get(0));
                 }
             }
 
             if(lanesStillInAuction.size() != 0){
-
+                auction = true;
                 addBehaviour(new Auction());
             }
 
@@ -140,23 +153,14 @@ public class TrafficLight extends Agent {
         AID maxPPLane;
         boolean agreement = false;
 
-        private boolean cond(){
-            if(alternateFlag)
-                return i < lanesStillInAuction.size();
-            else
-                return i > -1;
-        }
 
         @Override
         public void action() {
-            if(alternateFlag)
-                i = 0;
-            else
-                i = lanesStillInAuction.size() - 1;
+            i = 0;
 
             int step = 0;
 
-            while(cond()){
+            while(i<lanesStillInAuction.size()){
 
                 switch(step){
 
@@ -213,10 +217,7 @@ public class TrafficLight extends Agent {
 
                             step = 0;
 
-                            if(alternateFlag)
-                                i++;
-                            else
-                                i--;
+                            i++;
                         }
                         else {
 
@@ -256,7 +257,7 @@ public class TrafficLight extends Agent {
                 rejectPropMsg.setReplyWith("reject_proposal" + System.currentTimeMillis());
                 myAgent.send(rejectPropMsg);
 
-                alternateFlag = !alternateFlag;
+                auction = false;
                 agreement = true;
             }
         }

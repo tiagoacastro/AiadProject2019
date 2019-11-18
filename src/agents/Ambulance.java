@@ -11,6 +11,8 @@ public class Ambulance extends Vehicle{
      */
     public Ambulance(int startingNode, int targetNode){
         super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode));
+
+        priorityPoints = Integer.MAX_VALUE;
     }
 
     /**
