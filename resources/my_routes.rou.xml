@@ -1,9 +1,0 @@
-<routes>
-
-    <vType accel="1.0" decel="5.0" id="Car" length="2.0" maxSpeed="100.0" sigma="0.0" />
-    <vType accel="1.0" decel="5.0" id="Bus" length="12.0" maxSpeed="1.0" sigma="0.0" />
-
-    <route id="route0" edges="1to2 2to3 3to6 6to9"/>
-    <vehicle depart="10" id="veh0" route="route0" type="Bus" />
-
-</routes>
