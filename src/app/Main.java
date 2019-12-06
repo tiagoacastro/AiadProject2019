@@ -19,13 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     /*
-        Runtime instance of JADE
-     */
-    private static Runtime runtime;
-    /*
         Main container where the agents are
      */
-    private static ContainerController mainContainer;
+    public static ContainerController mainContainer;
     /*
         global tick time
      */
@@ -46,6 +42,10 @@ public class Main {
         config file buffered reader
      */
     private static BufferedReader br;
+    /*
+        Number of vehicles running
+     */
+    public static int vehiclesRunning = 0;
 
     /*
         Main
@@ -92,7 +92,7 @@ public class Main {
         Method that initializes JADE.
     */
     private static void startJADE(){
-        runtime = Runtime.instance();
+        Runtime runtime = Runtime.instance();
         mainContainer = runtime.createMainContainer(new ProfileImpl());
     }
 
@@ -182,6 +182,8 @@ public class Main {
                                     Integer.parseInt(agentsInfo[3]), Integer.parseInt(agentsInfo[4]));
                         break;
                 }
+
+                vehiclesRunning++;
 
                 agents[Integer.parseInt(agentsInfo[1])].add(agent);
                 agentControllers[Integer.parseInt(agentsInfo[1])].add(mainContainer.acceptNewAgent("vehicle" + i, agent));

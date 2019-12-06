@@ -120,6 +120,11 @@ public abstract class Vehicle extends Agent {
      */
     @Override
     protected void takeDown(){
+        Main.vehiclesRunning--;
+
+        if(Main.vehiclesRunning == 0)
+            System.exit(0);
+
         if(Main.debug)
             System.out.println(nickname + " has terminated!");
     }
