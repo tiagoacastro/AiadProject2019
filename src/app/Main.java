@@ -29,13 +29,31 @@ public class Main {
     /*
         global tick time
      */
-    public static final int tick = 1500;
+    public static int tick = 1500;
+    /*
+        traffic light wait time
+     */
+    public static int tlWait = 8;
+    /*
+        represent gui flag
+     */
+    public static boolean gui = true;
+    /*
+        debug flag
+     */
+    public static boolean debug = true;
+    /*
+        config file buffered reader
+     */
+    private static BufferedReader br;
 
     /*
         Main
      */
     public static void main(String [] args){
         Graph.construct();
+
+        config();
 
         startJADE();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -44,6 +62,31 @@ public class Main {
         createAgents();
     }
 
+    /*
+        config program
+     */
+    private static void config(){
+        try {
+            br = new BufferedReader(new FileReader(new File("config.txt")));
+
+            String st;
+            if ((st = br.readLine()) != null){
+                gui = Boolean.parseBoolean(st);
+            }
+            if ((st = br.readLine()) != null){
+                debug = Boolean.parseBoolean(st);
+            }
+            if ((st = br.readLine()) != null){
+                tick = Integer.parseInt(st);
+            }
+            if ((st = br.readLine()) != null){
+                tlWait = Integer.parseInt(st);
+            }
+            br.readLine();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /*
         Method that initializes JADE.
@@ -105,10 +148,6 @@ public class Main {
                 agents[i] = new ArrayList<>();
             }
 
-            File file = new File("agents.txt");
-
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
             String st;
             int i = 0;
             while ((st = br.readLine()) != null) {
@@ -118,15 +157,27 @@ public class Main {
 
                 Vehicle agent;
 
-                switch(Integer.parseInt(agentsInfo[0])){
-                    case 1:
-                        agent = new RushedCar(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                switch(agentsInfo[0]){
+                    case "Rushed":
+                        if(agentsInfo.length == 3)
+                            agent = new RushedCar(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                        else
+                            agent = new RushedCar(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]),
+                                    Integer.parseInt(agentsInfo[3]), Integer.parseInt(agentsInfo[4]));
                         break;
-                    case 2:
-                        agent = new Ambulance(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                    case "Ambulance":
+                        if(agentsInfo.length == 3)
+                            agent = new Ambulance(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                        else
+                            agent = new Ambulance(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]),
+                                    Integer.parseInt(agentsInfo[3]), Integer.parseInt(agentsInfo[4]));
                         break;
                     default:
-                        agent = new Car(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                        if(agentsInfo.length == 3)
+                            agent = new Car(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]));
+                        else
+                            agent = new Car(Integer.parseInt(agentsInfo[1]), Integer.parseInt(agentsInfo[2]),
+                                    Integer.parseInt(agentsInfo[3]), Integer.parseInt(agentsInfo[4]));
                         break;
                 }
 

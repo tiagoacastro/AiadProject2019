@@ -116,7 +116,8 @@ public abstract class Vehicle extends Agent {
      */
     @Override
     protected void takeDown(){
-        System.out.println(nickname + " has terminated!");
+        if(Main.debug)
+            System.out.println(nickname + " has terminated!");
     }
 
     /**
@@ -278,10 +279,14 @@ public abstract class Vehicle extends Agent {
                         if (message.getPerformative() == ACLMessage.CONFIRM) {
                             addBehaviour(new Auction());
                             step = 2;
-                            System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
+
+                            if(Main.debug)
+                                System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
                         } else {
                             step = 0;
-                            System.out.println("REFUSED INFORM FROM " + nickname + "\n");
+
+                            if(Main.debug)
+                                System.out.println("REFUSED INFORM FROM " + nickname + "\n");
                         }
                     }
                     break;
@@ -340,7 +345,10 @@ public abstract class Vehicle extends Agent {
                                 tlAid = message.getSender();
 
                                 currentMaxPriorityPoints = Integer.parseInt(content.substring(0, content.indexOf("|")));
-                                System.out.println("First car (" + nickname + ") received the TL's CFP (" + currentMaxPriorityPoints + ")");
+
+                                if(Main.debug)
+                                    System.out.println("First car (" + nickname + ") received the TL's CFP (" + currentMaxPriorityPoints + ")");
+
                                 String aids = content.substring(content.indexOf("|") + 1);
 
                                 int posX = aids.indexOf('|');
@@ -366,8 +374,9 @@ public abstract class Vehicle extends Agent {
                                 step = 1;
                             }
                             else {                               // Cars behind the first of the queue
+                                if(Main.debug)
+                                    System.out.println(nickname + " behind the first car received its CFP");
 
-                                System.out.println(nickname + " behind the first car received its CFP");
                                 ACLMessage replyToFirstCarMsg = message.createReply();
 
                                 if (retry <= maxTries) {
@@ -376,11 +385,15 @@ public abstract class Vehicle extends Agent {
                                     lastPriorityPoints = tempPP;
                                     replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
                                     replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
-                                    System.out.println(nickname + " behind the first car sent his PROPOSE (" + tempPP + ")");
+
+                                    if(Main.debug)
+                                        System.out.println(nickname + " behind the first car sent his PROPOSE (" + tempPP + ")");
                                 } else {
                                     replyToFirstCarMsg.setPerformative(ACLMessage.REFUSE);
                                     replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
-                                    System.out.println(nickname + " behind the first car sent his REFUSE (" + lastPriorityPoints + ")");
+
+                                    if(Main.debug)
+                                        System.out.println(nickname + " behind the first car sent his REFUSE (" + lastPriorityPoints + ")");
                                 }
 
                                 myAgent.send(replyToFirstCarMsg);
@@ -390,8 +403,9 @@ public abstract class Vehicle extends Agent {
                         }
                         else if(message.getPerformative() == ACLMessage.ACCEPT_PROPOSAL ||
                                 message.getPerformative() == ACLMessage.REJECT_PROPOSAL){
+                            if(Main.debug)
+                                System.out.println(nickname + " received ACCEPT_PROPOSAL/REJECT_PROPOSAL from the TL");
 
-                            System.out.println(nickname + " received ACCEPT_PROPOSAL/REJECT_PROPOSAL from the TL");
                             ACLMessage informMsg = new ACLMessage(ACLMessage.INFORM);
 
                             for(int i = 0; i < this.carsBehind.size(); i++){
@@ -400,7 +414,9 @@ public abstract class Vehicle extends Agent {
 
                             if(message.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                                 informMsg.setContent("GO");
-                                System.out.println(nickname + " sent INFORM to GO to the ones behind him");
+
+                                if(Main.debug)
+                                    System.out.println(nickname + " sent INFORM to GO to the ones behind him");
 
                                 priorityPoints -= lastPriorityPoints;
                                 waiting = false;
@@ -409,7 +425,10 @@ public abstract class Vehicle extends Agent {
                             }
                             else {
                                 informMsg.setContent("DONT_GO");
-                                System.out.println(nickname + " sent INFORM to DONT_GO to the ones behind him");
+
+                                if(Main.debug)
+                                    System.out.println(nickname + " sent INFORM to DONT_GO to the ones behind him");
+
                                 lastPriorityPoints = 0;
                             }
                             retry = 1;
@@ -419,17 +438,18 @@ public abstract class Vehicle extends Agent {
 
                         }
                         else if(message.getPerformative() == ACLMessage.INFORM){
-
                             if((message.getContent()).equals("GO")){
+                                if(Main.debug)
+                                    System.out.println(nickname + " received INFORM to GO");
 
-                                System.out.println(nickname + " received INFORM to GO");
                                 waiting = false;
                                 pass = true;
                                 priorityPoints -= lastPriorityPoints;
                             }
                             else if((message.getContent()).equals("DONT_GO")){
+                                if(Main.debug)
+                                    System.out.println(nickname + " received INFORM to DONT_GO");
 
-                                System.out.println(nickname + " received INFORM to DONT_GO");
                                 lastPriorityPoints = 0;
                                 step = 0;
                             }
@@ -452,7 +472,9 @@ public abstract class Vehicle extends Agent {
                     cfpMsgCar.setConversationId("car_car_auction");
                     cfpMsgCar.setReplyWith("cfp" + System.currentTimeMillis());
                     myAgent.send(cfpMsgCar);
-                    System.out.println(nickname + " sent CFP to the ones behind him and still in auction");
+
+                    if(Main.debug)
+                        System.out.println(nickname + " sent CFP to the ones behind him and still in auction");
 
                     step = 2;
                     break;
@@ -469,11 +491,16 @@ public abstract class Vehicle extends Agent {
                         int tempPP = choosePriorityPoints();
                         retry++;
                         lastPriorityPoints = tempPP;
-                        System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
+
+                        if(Main.debug)
+                            System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
+
                         carsProposedPP.put(getAID(), lastPriorityPoints);
                     } else {
                         carsStillInAuction.remove(getAID());
-                        System.out.println(nickname + " (first car) choose wont send more PP (retry:" + retry + ")");
+
+                        if(Main.debug)
+                            System.out.println(nickname + " (first car) choose wont send more PP (retry:" + retry + ")");
                     }
 
                     int i = 1;
@@ -484,14 +511,16 @@ public abstract class Vehicle extends Agent {
 
                             carsProposedPP.put(proposeMsg.getSender(), Integer.parseInt(proposeMsg.getContent()));
                             if (proposeMsg.getPerformative() == ACLMessage.PROPOSE) {
-
                                 i++;
-                                System.out.println(nickname + " received the PROPOSE (" + proposeMsg.getContent() + ") from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
+
+                                if(Main.debug)
+                                    System.out.println(nickname + " received the PROPOSE (" + proposeMsg.getContent() + ") from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
                             else if(proposeMsg.getPerformative() == ACLMessage.REFUSE){
-
                                 carsStillInAuction.remove(proposeMsg.getSender());
-                                System.out.println(nickname + " received the REFUSE from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
+
+                                if(Main.debug)
+                                    System.out.println(nickname + " received the REFUSE from " + proposeMsg.getSender().getName().substring(0, proposeMsg.getSender().getName().indexOf("@")));
                             }
                         }
                         else{
@@ -508,11 +537,14 @@ public abstract class Vehicle extends Agent {
 
                     int totalProposedPP = 0;
                     for (Integer value : carsProposedPP.values()) {
+                        if(Main.debug)
+                            System.out.println(carsProposedPP.toString());
 
-                        System.out.println(carsProposedPP.toString());
                         totalProposedPP += value;
                     }
-                    System.out.println("totalProposedPP: " + totalProposedPP);
+
+                    if(Main.debug)
+                        System.out.println("totalProposedPP: " + totalProposedPP);
 
                     if(totalProposedPP > currentMaxPriorityPoints){
 
@@ -522,7 +554,10 @@ public abstract class Vehicle extends Agent {
                         replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
                         replyToTL.addReceiver(tlAid);
                         myAgent.send(replyToTL);
-                        System.out.println(nickname + " sent the PROPOSE (" + totalProposedPP + ") to the TL");
+
+                        if(Main.debug)
+                            System.out.println(nickname + " sent the PROPOSE (" + totalProposedPP + ") to the TL");
+
                         step = 0;
                     }
                     else{
@@ -534,7 +569,9 @@ public abstract class Vehicle extends Agent {
                             replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
                             replyToTL.addReceiver(tlAid);
                             myAgent.send(replyToTL);
-                            System.out.println(nickname + " sent the REFUSE to the TL ");
+
+                            if(Main.debug)
+                                System.out.println(nickname + " sent the REFUSE to the TL ");
 
                             step = 0;
                         }

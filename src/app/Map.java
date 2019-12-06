@@ -52,35 +52,31 @@ public class Map extends JFrame implements Runnable{
         copyMap(originalMap, oldMap);
         copyMap(originalMap, newMap);
 
-        map = new MapGraphic();
-        this.getContentPane().add(map);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(WIDTH, HEIGHT);
-        this.setVisible(true);
+        if(Main.gui){
+            map = new MapGraphic();
+            this.getContentPane().add(map);
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setSize(WIDTH, HEIGHT);
+            this.setVisible(true);
+        }
     }
 
     @Override
     public void run() {
-//        Calendar cal = Calendar.getInstance();
-//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SS");
-//        System.out.println( "Map: " + sdf.format(cal.getTime()) );
-        map.setMap(newMap);
-        for(Character[] line : newMap) {
-            for (Character pos : line) {
-                System.out.print(pos);
-                System.out.print(' ');
+        if(Main.gui) {
+            map.setMap(newMap);
+            for (Character[] line : newMap) {
+                for (Character pos : line) {
+                    System.out.print(pos);
+                    System.out.print(' ');
+                }
+                System.out.print('\n');
             }
-            System.out.print('\n');
+            System.out.print("\n\n\n");
         }
-        System.out.print("\n\n\n");
+
         copyMap(newMap, oldMap);
         copyMap(originalMap, newMap);
-
-
-
-//        cal = Calendar.getInstance();
-//        sdf = new SimpleDateFormat("HH:mm:ss:SS");
-//        System.out.println( "Map_end: " + sdf.format(cal.getTime()) );
     }
 
     private void copyMap(Character[][] from, Character[][] to){

@@ -37,15 +37,15 @@ public class TrafficLight extends Agent {
         registerYellowPages();
 
         addBehaviour(new Listen());
-        addBehaviour(new StartAuction(this, Main.tick * 8));
+        addBehaviour(new StartAuction(this, Main.tick * Main.tlWait));
     }
 
     /*
         Method that is a placeholder for agent specific cleanup code.
      */
     protected void takeDown(){
-
-        System.out.println(getAID().getName().substring(0, getAID().getName().indexOf("@")) + " has terminated!");
+        if(Main.debug)
+            System.out.println(getAID().getName().substring(0, getAID().getName().indexOf("@")) + " has terminated!");
     }
 
     public AID getAid(){
@@ -186,7 +186,8 @@ public class TrafficLight extends Agent {
                             }
                             cfpMsg.setContent(content);
                             myAgent.send(cfpMsg);
-                            System.out.println(nickname + " sent CFP to " + lanesStillInAuction.get(i).getName().substring(0, lanesStillInAuction.get(0).getName().indexOf('@')));
+                            if(Main.debug)
+                                System.out.println(nickname + " sent CFP to " + lanesStillInAuction.get(i).getName().substring(0, lanesStillInAuction.get(0).getName().indexOf('@')));
                         }
 
                         step = 1;
@@ -208,11 +209,13 @@ public class TrafficLight extends Agent {
                                 maxPP = Integer.parseInt(reply.getContent());
                                 maxPPLane = reply.getSender();
 
-                                System.out.println(nickname + " received PROPOSE (" + reply.getContent() + ") by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
+                                if(Main.debug)
+                                    System.out.println(nickname + " received PROPOSE (" + reply.getContent() + ") by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
                             } else if(reply.getPerformative() == ACLMessage.REFUSE) {
-
                                 lanesStillInAuction.remove(reply.getSender());
-                                System.out.println(nickname + " received REFUSE by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
+
+                                if(Main.debug)
+                                    System.out.println(nickname + " received REFUSE by " + reply.getSender().getName().substring(0, reply.getSender().getName().indexOf('@')) + " to increase the max PP\n");
                             }
 
                             step = 0;
@@ -234,7 +237,8 @@ public class TrafficLight extends Agent {
                 acceptPropMsg.addReceiver(lanesStillInAuction.get(0));
                 acceptPropMsg.setConversationId("accept_proposal_auction");
                 acceptPropMsg.setReplyWith("accept_proposal" + System.currentTimeMillis());
-                System.out.println(nickname + " sent ACCEPT_PROPOSAL to " + lanesStillInAuction.get(0).getName());
+                if(Main.debug)
+                    System.out.println(nickname + " sent ACCEPT_PROPOSAL to " + lanesStillInAuction.get(0).getName());
                 myAgent.send(acceptPropMsg);
 
 
@@ -243,9 +247,10 @@ public class TrafficLight extends Agent {
 
                     if(lanes[j].size() != 0){
                         if(!((lanes[j].get(0).equals(lanesStillInAuction.get(0))))){
-
                             rejectPropMsg.addReceiver(lanes[j].get(0));
-                            System.out.println(nickname + " sent REJECT_PROPOSAL to " + lanes[j].get(0).getName());
+
+                            if(Main.debug)
+                                System.out.println(nickname + " sent REJECT_PROPOSAL to " + lanes[j].get(0).getName());
                         }
                         else{
 

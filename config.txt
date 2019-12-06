@@ -1,0 +1,10 @@
+true
+true
+1500
+8
+
+Rushed 0 8 100 4
+Car 1 6 100 4
+Car 4 11 100 4
+Car 3 8 100 4
+Ambulance 3 8
