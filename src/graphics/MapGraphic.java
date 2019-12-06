@@ -76,7 +76,6 @@ public class MapGraphic extends JPanel {
         }catch(IOException e){
             e.printStackTrace();
         }
-
     }
 
     protected void paintComponent(Graphics g){

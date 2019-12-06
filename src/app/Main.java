@@ -2,6 +2,7 @@ package app;
 
 import agents.*;
 
+import graphics.MapGraphic;
 import jade.core.Runtime;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentController;
@@ -18,6 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Main {
+    /*
+        Runtime instance of JADE
+     */
+    private static Runtime runtime;
     /*
         Main container where the agents are
      */
@@ -45,7 +50,7 @@ public class Main {
     /*
         Number of vehicles running
      */
-    public static int vehiclesRunning = 0;
+    public static volatile int vehiclesRunning = 0;
 
     /*
         Main
@@ -60,6 +65,29 @@ public class Main {
         scheduler.scheduleAtFixedRate(new Map(), tick, tick, TimeUnit.MILLISECONDS);
 
         createAgents();
+
+        try{
+            while(vehiclesRunning > 0)
+                Thread.sleep(1000);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        stop(scheduler);
+    }
+
+    private static void stop(ScheduledExecutorService scheduler){
+        try{
+            Main.mainContainer.kill();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        runtime.shutDown();
+
+        scheduler.shutdown();
+
+        System.exit(0);
     }
 
     /*
@@ -92,7 +120,7 @@ public class Main {
         Method that initializes JADE.
     */
     private static void startJADE(){
-        Runtime runtime = Runtime.instance();
+        runtime = Runtime.instance();
         mainContainer = runtime.createMainContainer(new ProfileImpl());
     }
 

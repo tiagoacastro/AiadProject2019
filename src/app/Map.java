@@ -84,21 +84,4 @@ public class Map extends JFrame implements Runnable{
             to[r] = from[r].clone();
         }
     }
-
-    public void loadAssets(){
-        File file = new File("./resources/road.jpg");
-        File file1 = new File("./resources/roadh.jpg");
-        File file2 = new File("./resources/ground.jpg");
-        File file3 = new File("./resources/simple_car.jpg");
-
-        try{
-            this.road = ImageIO.read(file);
-            this.roadh = ImageIO.read(file1);
-            this.ground = ImageIO.read(file2);
-            this.simple_car = ImageIO.read(file3);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-    }
 }
