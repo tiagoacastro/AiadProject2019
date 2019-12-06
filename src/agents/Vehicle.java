@@ -65,6 +65,10 @@ public abstract class Vehicle extends Agent {
      *   number of try on auction
      */
     int retry = 1;
+    /**
+     *   wave in which the vehicle started
+     */
+    private int wave;
 
     /**
      * Vehicle constructor
@@ -125,6 +129,14 @@ public abstract class Vehicle extends Agent {
      *   @return number of points
      */
     abstract int choosePriorityPoints();
+
+    /**
+     * wave setter
+     * @param wave wave number
+     */
+    public void setWave(int wave) {
+        this.wave = wave;
+    }
 
     /**
      * Defines the path the vehicle has to take

@@ -142,9 +142,11 @@ public class Main {
     */
     private static void createVehiclesAgents(){
         try {
-            ArrayList<AgentController>[] agents = new ArrayList[Graph.nodes.size()];
+            ArrayList<AgentController>[] agentControllers = new ArrayList[Graph.nodes.size()];
+            ArrayList<Vehicle>[] agents = new ArrayList[Graph.nodes.size()];
 
             for (int i = 0; i < Graph.nodes.size(); i++) {
+                agentControllers[i] = new ArrayList<>();
                 agents[i] = new ArrayList<>();
             }
 
@@ -181,7 +183,8 @@ public class Main {
                         break;
                 }
 
-                agents[Integer.parseInt(agentsInfo[1])].add(mainContainer.acceptNewAgent("vehicle" + i, agent));
+                agents[Integer.parseInt(agentsInfo[1])].add(agent);
+                agentControllers[Integer.parseInt(agentsInfo[1])].add(mainContainer.acceptNewAgent("vehicle" + i, agent));
                 i++;
             }
 
@@ -190,9 +193,10 @@ public class Main {
             while(notOver){
                 notOver = false;
 
-                for(ArrayList<AgentController> agentsOnNode : agents){
-                   if(i < agentsOnNode.size()) {
-                       agentsOnNode.get(i).start();
+                for(int k = 0; k < agentControllers.length; k++){
+                   if(i < agentControllers[k].size()) {
+                       agentControllers[k].get(i).start();
+                       agents[k].get(i).setWave(i+1);
 
                        notOver = true;
                    }
