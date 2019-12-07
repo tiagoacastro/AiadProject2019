@@ -54,6 +54,10 @@ public abstract class Vehicle extends Agent {
      */
     int priorityPoints;
     /**
+     *   Vehicle Start Priority Points
+     */
+    private int startPriorityPoints;
+    /**
      *   Represents if vehicle can pass the traffic light
      */
     private boolean pass = false;
@@ -70,6 +74,12 @@ public abstract class Vehicle extends Agent {
      */
     private int wave;
 
+    private int auctions = 0;
+
+    private ArrayList<Integer> ppAuction = new ArrayList<>();
+
+    private ArrayList<Integer> triesAuction = new ArrayList<>();
+
     /**
      * Vehicle constructor
      * @param startingNode      start
@@ -81,6 +91,7 @@ public abstract class Vehicle extends Agent {
         this.pos = new Pos(startingNode.getX(), startingNode.getY());
         Random r = new Random();
         this.priorityPoints = r.nextInt(51) + 50; //generate random from 50 to 100 (both inclusive)
+        this.startPriorityPoints = this.priorityPoints;
         this.maxTries = r.nextInt(5)+1;
 
         definePath();
@@ -98,6 +109,7 @@ public abstract class Vehicle extends Agent {
         this.targetNode = targetNode;
         this.pos = new Pos(startingNode.getX(), startingNode.getY());
         this.priorityPoints = priorityPoints;
+        this.startPriorityPoints = this.priorityPoints;
         this.maxTries = maxTries;
 
         definePath();
@@ -115,13 +127,36 @@ public abstract class Vehicle extends Agent {
 
     }
 
+    abstract String getType();
+
     /**
      *   Method that is a placeholder for agent specific cleanup code.
      */
     @Override
     protected void takeDown(){
         try{
-            Main.bw.write(startingNode.getName()+','+targetNode.getName());
+            String pp1, pp2, pp3, t1, t2, t3;
+            pp1 = pp2 = pp3 = t1 = t2 = t3 = "-";
+
+            for(int i = 0; i < 3 && i < ppAuction.size(); i++){
+                switch(i){
+                    case 0:
+                        pp1 = Integer.toString(ppAuction.get(i));
+                        t1 = Integer.toString(triesAuction.get(i));
+                        break;
+                    case 1:
+                        pp2 = Integer.toString(ppAuction.get(i));
+                        t2 = Integer.toString(triesAuction.get(i));
+                        break;
+                    case 2:
+                        pp3 = Integer.toString(ppAuction.get(i));
+                        t3 = Integer.toString(triesAuction.get(i));
+                        break;
+                }
+            }
+
+            Main.bw.write(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
+                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3);
             Main.bw.newLine();
         } catch(Exception e){
             e.printStackTrace();
@@ -299,6 +334,7 @@ public abstract class Vehicle extends Agent {
                     if(message != null) {
                         if (message.getPerformative() == ACLMessage.CONFIRM) {
                             addBehaviour(new Auction());
+                            auctions++;
                             step = 2;
 
                             if(Main.debug)
@@ -402,8 +438,19 @@ public abstract class Vehicle extends Agent {
 
                                 if (retry <= maxTries) {
                                     int tempPP = choosePriorityPoints();
-                                    retry++;
                                     lastPriorityPoints = tempPP;
+
+                                    if(ppAuction.size() < auctions)
+                                        ppAuction.add(lastPriorityPoints);
+                                    else
+                                        ppAuction.set(auctions-1,lastPriorityPoints);
+
+                                    if(triesAuction.size() < auctions)
+                                        triesAuction.add(retry);
+                                    else
+                                        triesAuction.set(auctions-1,retry);
+
+                                    retry++;
                                     replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
                                     replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
 
@@ -510,9 +557,19 @@ public abstract class Vehicle extends Agent {
                     // First Car choosing his PP to send
                     if (retry <= maxTries) {
                         int tempPP = choosePriorityPoints();
-                        retry++;
                         lastPriorityPoints = tempPP;
 
+                        if(ppAuction.size() < auctions)
+                            ppAuction.add(lastPriorityPoints);
+                        else
+                            ppAuction.set(auctions-1,lastPriorityPoints);
+
+                        if(triesAuction.size() < auctions)
+                            triesAuction.add(retry);
+                        else
+                            triesAuction.set(auctions-1,retry);
+
+                        retry++;
                         if(Main.debug)
                             System.out.println(nickname + " (first car) choose his PP to send (" + tempPP + ")");
 

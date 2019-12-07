@@ -48,4 +48,9 @@ public class Car extends Vehicle{
         else
            return (retry*priorityPoints)/(TlLeft*maxTries);
     }
+
+    @Override
+    String getType(){
+        return "Car";
+    }
 }

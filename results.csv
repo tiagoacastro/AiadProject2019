@@ -1,6 +1,6 @@
-startNode,destinationNode
-4,11
-3,8
-3,8
-0,8
-1,6
+type,"start node","destination node","start priority points",wave,"max tries","1st auction used pps","1st auction tries","2nd auction used pps","2nd auction tries","3rd auction used pps","3rd auction tries"
+Car,4,11,100,1,4,12,1,88,1,-,-
+Car,3,8,100,1,4,8,1,11,1,92,1
+Ambulance,3,8,82,2,1,300,1,300,1,300,1
+RushedCar,0,8,100,1,4,25,1,18,1,57,1
+Car,1,6,100,1,4,6,1,7,1,10,1

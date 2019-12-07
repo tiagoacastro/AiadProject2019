@@ -47,4 +47,9 @@ public class RushedCar extends Vehicle{
         else
             return (retry*priorityPoints)/maxTries;
     }
+
+    @Override
+    String getType(){
+        return "RushedCar";
+    }
 }

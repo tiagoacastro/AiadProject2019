@@ -38,4 +38,9 @@ public class Ambulance extends Vehicle{
     int choosePriorityPoints(){
         return 300;
     }
+
+    @Override
+    String getType(){
+        return "Ambulance";
+    }
 }
