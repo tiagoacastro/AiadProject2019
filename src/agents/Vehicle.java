@@ -120,6 +120,13 @@ public abstract class Vehicle extends Agent {
      */
     @Override
     protected void takeDown(){
+        try{
+            Main.bw.write(startingNode.getName()+','+targetNode.getName());
+            Main.bw.newLine();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
         Main.vehiclesRunning--;
 
         if(Main.debug)

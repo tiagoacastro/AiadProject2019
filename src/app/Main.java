@@ -9,9 +9,7 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,7 +24,7 @@ public class Main {
     /*
         Main container where the agents are
      */
-    public static ContainerController mainContainer;
+    private static ContainerController mainContainer;
     /*
         global tick time
      */
@@ -47,6 +45,10 @@ public class Main {
         config file buffered reader
      */
     private static BufferedReader br;
+    /*
+        results file buffered reader
+     */
+    public static BufferedWriter bw;
     /*
         Number of vehicles running
      */
@@ -85,6 +87,12 @@ public class Main {
 
         runtime.shutDown();
 
+        try{
+            bw.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         scheduler.shutdown();
 
         System.exit(0);
@@ -111,6 +119,21 @@ public class Main {
                 tlWait = Integer.parseInt(st);
             }
             br.readLine();
+
+            File file = new File("results.csv");
+
+            boolean writeHeader = false;
+            if (!file.exists()) {
+                file.createNewFile();
+                writeHeader = true;
+            }
+
+            bw = new BufferedWriter(new FileWriter(file));
+
+            if(writeHeader){
+                bw.write("startNode,destinationNode");
+                bw.newLine();
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -217,6 +240,8 @@ public class Main {
                 agentControllers[Integer.parseInt(agentsInfo[1])].add(mainContainer.acceptNewAgent("vehicle" + i, agent));
                 i++;
             }
+
+            br.close();
 
             boolean notOver = true;
             i = 0;
