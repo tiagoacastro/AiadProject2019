@@ -131,6 +131,8 @@ public class Main {
             bw = new BufferedWriter(new FileWriter(file));
 
             if(writeHeader){
+                bw.write("sep=,");
+                bw.newLine();
                 bw.write("type,\"start node\",\"destination node\",\"start priority points\",wave,\"max tries\"" +
                         ",\"1st auction used pps\",\"1st auction tries\",\"2nd auction used pps\",\"2nd auction tries\"" +
                         ",\"3rd auction used pps\",\"3rd auction tries\"");
