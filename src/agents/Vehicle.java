@@ -155,9 +155,8 @@ public abstract class Vehicle extends Agent {
                 }
             }
 
-            Main.bw.write(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
-                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3);
-            Main.bw.newLine();
+            Main.sb.append(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
+                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+'\n');
         } catch(Exception e){
             e.printStackTrace();
         }

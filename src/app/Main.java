@@ -46,9 +46,13 @@ public class Main {
      */
     private static BufferedReader br;
     /*
-        results file buffered reader
+        results file buffered writer
      */
-    public static BufferedWriter bw;
+    private static BufferedWriter bw;
+    /*
+        results buffer
+     */
+    public static StringBuilder sb = new StringBuilder();
     /*
         Number of vehicles running
      */
@@ -68,9 +72,14 @@ public class Main {
 
         createAgents();
 
+        long end = System.currentTimeMillis() + 120000;
+
         try{
-            while(vehiclesRunning > 0)
-                Thread.sleep(1000);
+            while(vehiclesRunning > 0 && System.currentTimeMillis() < end)
+                Thread.sleep(tick);
+
+            if(System.currentTimeMillis() < end)
+                bw.write(sb.toString());
         } catch(Exception e){
             e.printStackTrace();
         }
