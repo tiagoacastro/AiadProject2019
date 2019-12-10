@@ -135,10 +135,10 @@ public abstract class Vehicle extends Agent {
     @Override
     protected void takeDown(){
         try{
-            String pp1, pp2, pp3, t1, t2, t3;
-            pp1 = pp2 = pp3 = t1 = t2 = t3 = "-";
+            String pp1, pp2, pp3, pp4, t1, t2, t3, t4;
+            pp1 = pp2 = pp3 = pp4 = t1 = t2 = t3 = t4 = "-";
 
-            for(int i = 0; i < 3 && i < ppAuction.size(); i++){
+            for(int i = 0; i < 4 && i < ppAuction.size(); i++){
                 switch(i){
                     case 0:
                         pp1 = Integer.toString(ppAuction.get(i));
@@ -152,11 +152,15 @@ public abstract class Vehicle extends Agent {
                         pp3 = Integer.toString(ppAuction.get(i));
                         t3 = Integer.toString(triesAuction.get(i));
                         break;
+                    case 3:
+                        pp4 = Integer.toString(ppAuction.get(i));
+                        t4 = Integer.toString(triesAuction.get(i));
+                        break;
                 }
             }
 
             Main.sb.append(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
-                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+'\n');
+                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+','+pp4+','+t4+'\n');
         } catch(Exception e){
             e.printStackTrace();
         }
