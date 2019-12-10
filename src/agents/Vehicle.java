@@ -138,7 +138,7 @@ public abstract class Vehicle extends Agent {
     protected void takeDown(){
         try{
             String pp1, pp2, pp3, pp4, t1, t2, t3, t4;
-            pp1 = pp2 = pp3 = pp4 = t1 = t2 = t3 = t4 = "-";
+            pp1 = pp2 = pp3 = pp4 = t1 = t2 = t3 = t4 = "0";
 
             for(int i = 0; i < 4 && i < ppAuction.size(); i++){
                 switch(i){
