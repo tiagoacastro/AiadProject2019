@@ -142,7 +142,7 @@ public class Main {
             if(writeHeader){
                 bw.write("sep=,");
                 bw.newLine();
-                bw.write("type,\"start node\",\"dest. node\",\"start pps\",wave,\"max tries\"" +
+                bw.write("type,\"start node\",\"dest. node\",\"start pps\",wave,\"max tries\",\"turns needed\"" +
                         ",\"1st auc. pps\",\"1st auc. tries\",\"2nd auc. pps\",\"2nd auc. tries\"" +
                         ",\"3rd auc. pps\",\"3rd auc. tries\",\"4th auc. pps\",\"4th auc. tries\"");
                 bw.newLine();

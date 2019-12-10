@@ -80,6 +80,8 @@ public abstract class Vehicle extends Agent {
 
     private ArrayList<Integer> triesAuction = new ArrayList<>();
 
+    private int turnsTaken = 0;
+
     /**
      * Vehicle constructor
      * @param startingNode      start
@@ -160,7 +162,7 @@ public abstract class Vehicle extends Agent {
             }
 
             Main.sb.append(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
-                        +','+this.wave+','+this.maxTries+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+','+pp4+','+t4+'\n');
+                        +','+this.wave+','+this.maxTries+','+this.turnsTaken+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+','+pp4+','+t4+'\n');
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -254,6 +256,8 @@ public abstract class Vehicle extends Agent {
         protected void onTick() {
             if(pos.x == path[path.length-1].getEnd().getX() && pos.y == path[path.length-1].getEnd().getY())
                 myAgent.doDelete();
+            else
+                turnsTaken++;
 
             try {
                 if(waiting)
