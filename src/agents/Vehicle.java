@@ -56,7 +56,7 @@ public abstract class Vehicle extends Agent {
     /**
      *   Vehicle Start Priority Points
      */
-    private int startPriorityPoints;
+    int startPriorityPoints;
     /**
      *   Represents if vehicle can pass the traffic light
      */

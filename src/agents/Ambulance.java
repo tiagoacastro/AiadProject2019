@@ -12,7 +12,8 @@ public class Ambulance extends Vehicle{
     public Ambulance(int startingNode, int targetNode){
         super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode));
 
-        this.priorityPoints = Integer.MAX_VALUE;
+        this.priorityPoints = 999;
+        this.startPriorityPoints = this.priorityPoints;
         this.maxTries = 1;
     }
 
@@ -26,7 +27,8 @@ public class Ambulance extends Vehicle{
     public Ambulance(int startingNode, int targetNode, int priorityPoints, int maxTries){
         super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode), priorityPoints, maxTries);
 
-        this.priorityPoints = Integer.MAX_VALUE;
+        this.priorityPoints = 999;
+        this.startPriorityPoints = this.priorityPoints;
         this.maxTries = 1;
     }
 
