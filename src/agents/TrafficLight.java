@@ -1,5 +1,8 @@
 package agents;
 
+import java.io.*;
+import java.util.*;
+
 import app.Main;
 import jade.core.AID;
 import jade.core.Agent;
@@ -21,6 +24,7 @@ public class TrafficLight extends Agent {
     private String nickname;
     private ArrayList<AID>[] lanes = new ArrayList[4];
     private ArrayList<AID> lanesStillInAuction;
+    private ArrayList<String[]>[] regressionArray = new ArrayList[4];  // vehicleType, priorityPoints, maxTries, TlLeft
     private boolean auction = false;
 
     /*
@@ -33,6 +37,10 @@ public class TrafficLight extends Agent {
         for (int i = 0; i < 4; i++) {
             lanes[i] = new ArrayList<>();
         }
+        for (int i = 0; i < 4; i++) {
+            regressionArray[i] = new ArrayList<>();
+        }
+
 
         registerYellowPages();
 
@@ -79,6 +87,7 @@ public class TrafficLight extends Agent {
     private class Listen extends CyclicBehaviour {
         @Override
         public void action() {
+
             MessageTemplate msgTemp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
             ACLMessage msg = myAgent.receive(msgTemp);
 
@@ -91,24 +100,61 @@ public class TrafficLight extends Agent {
                     rejectMsg.setReplyWith("refuse_inform" + System.currentTimeMillis()); // To ensure unique values
                     myAgent.send(rejectMsg);
                 } else {
-                    switch (msg.getContent()) {
+
+                    String[] tempRegressionArray = new String[4];
+                    int index = msg.getContent().indexOf('/');
+                    String content = msg.getContent().substring(index + 1);
+                    index = content.indexOf('/');
+                    int i = 0;
+                    while(index != -1){
+
+                        tempRegressionArray[i] = content.substring(0, index);
+                        content = content.substring(index + 1);
+                        i++;
+                        index = content.indexOf('/');
+                    }
+                    tempRegressionArray[i] = content;
+
+                    switch (msg.getContent().substring(0, msg.getContent().indexOf('/'))) {
                         case "NORTH":
-                            if (!lanes[0].contains(msg.getSender()))
+                            if (!lanes[0].contains(msg.getSender())) {
                                 lanes[0].add(msg.getSender());
+                                regressionArray[0].add(tempRegressionArray);
+                            }
                             break;
                         case "EAST":
-                            if (!lanes[1].contains(msg.getSender()))
+                            if (!lanes[1].contains(msg.getSender())){
                                 lanes[1].add(msg.getSender());
+                                regressionArray[1].add(tempRegressionArray);
+                            }
                             break;
                         case "SOUTH":
-                            if (!lanes[2].contains(msg.getSender()))
+                            if (!lanes[2].contains(msg.getSender())){
                                 lanes[2].add(msg.getSender());
+                                regressionArray[2].add(tempRegressionArray);
+                            }
                             break;
                         case "WEST":
-                            if (!lanes[3].contains(msg.getSender()))
+                            if (!lanes[3].contains(msg.getSender())){
                                 lanes[3].add(msg.getSender());
+                                regressionArray[3].add(tempRegressionArray);
+                            }
                             break;
                     }
+
+//                    System.out.println(nickname + "[");
+//                    for(int k = 0; k < regressionArray.length; k++){
+//                        System.out.print("[");
+//                        for(int j = 0; j < regressionArray[k].size(); j++){
+//                            System.out.print("[");
+//                            for(int z = 0; z < regressionArray[k].get(j).length; z++){
+//                                System.out.print(regressionArray[k].get(j)[z] + ", ");
+//                            }
+//                            System.out.println("]");
+//                        }
+//                        System.out.println("]");
+//                    }
+//                    System.out.println("]");
 
                     ACLMessage acceptMsg = new ACLMessage(ACLMessage.CONFIRM);
                     acceptMsg.addReceiver(msg.getSender());

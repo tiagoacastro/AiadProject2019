@@ -15,6 +15,7 @@ public class Ambulance extends Vehicle{
         this.priorityPoints = 999;
         this.startPriorityPoints = this.priorityPoints;
         this.maxTries = 1;
+        this.vehicleType = "Ambulance";
     }
 
     /**

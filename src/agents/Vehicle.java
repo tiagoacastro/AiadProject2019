@@ -82,6 +82,8 @@ public abstract class Vehicle extends Agent {
 
     private int turnsTaken = 0;
 
+    String vehicleType;
+
     /**
      * Vehicle constructor
      * @param startingNode      start
@@ -326,7 +328,18 @@ public abstract class Vehicle extends Agent {
                     informMsg.addReceiver(path[currentEdge].getTlAid());
                     informMsg.setConversationId("inform");
                     informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
-                    informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
+                    String contentStr = String.valueOf(path[currentEdge].getDirection());
+                    contentStr += "/" + vehicleType;
+                    contentStr += "/" + priorityPoints;
+                    contentStr += "/" + maxTries;
+                    int TlLeft = 0;
+                    for(int i = currentEdge; i < path.length; i++){
+                        GraphEdge edge = path[i];
+                        if(edge.getEnd().getTl() != null)
+                            TlLeft++;
+                    }
+                    contentStr += "/" + TlLeft;
+                    informMsg.setContent(contentStr);
                     myAgent.send(informMsg);
 
                     step = 1;
