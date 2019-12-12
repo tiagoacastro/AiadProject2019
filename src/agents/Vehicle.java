@@ -78,6 +78,8 @@ public abstract class Vehicle extends Agent {
 
     private ArrayList<Integer> ppAuction = new ArrayList<>();
 
+    private ArrayList<Integer> leftAuctions = new ArrayList<>();
+
     private ArrayList<Integer> triesAuction = new ArrayList<>();
 
     private int turnsTaken = 0;
@@ -137,32 +139,35 @@ public abstract class Vehicle extends Agent {
     @Override
     protected void takeDown(){
         try{
-            String pp1, pp2, pp3, pp4, t1, t2, t3, t4;
-            pp1 = pp2 = pp3 = pp4 = t1 = t2 = t3 = t4 = "0";
-
+            String pp1, pp2, pp3, pp4, t1, t2, t3, t4, la1, la2, la3, la4;
+            pp1 = pp2 = pp3 = pp4 = t1 = t2 = t3 = t4 = la1 = la2 = la3 = la4 = "0";
             for(int i = 0; i < 4 && i < ppAuction.size(); i++){
                 switch(i){
                     case 0:
                         pp1 = Integer.toString(ppAuction.get(i));
                         t1 = Integer.toString(triesAuction.get(i));
+                        la1 = Integer.toString(leftAuctions.get(i));
                         break;
                     case 1:
                         pp2 = Integer.toString(ppAuction.get(i));
                         t2 = Integer.toString(triesAuction.get(i));
+                        la2 = Integer.toString(leftAuctions.get(i));
                         break;
                     case 2:
                         pp3 = Integer.toString(ppAuction.get(i));
                         t3 = Integer.toString(triesAuction.get(i));
+                        la3 = Integer.toString(leftAuctions.get(i));
                         break;
                     case 3:
                         pp4 = Integer.toString(ppAuction.get(i));
                         t4 = Integer.toString(triesAuction.get(i));
+                        la4 = Integer.toString(leftAuctions.get(i));
                         break;
                 }
             }
 
             Main.sb.append(getType()+','+startingNode.getName()+','+targetNode.getName()+','+this.startPriorityPoints
-                        +','+this.wave+','+this.maxTries+','+this.turnsTaken+','+pp1+','+t1+','+pp2+','+t2+','+pp3+','+t3+','+pp4+','+t4+'\n');
+                        +','+this.wave+','+this.maxTries+','+this.turnsTaken+','+pp1+','+t1+','+la1+','+pp2+','+t2+','+la2+','+pp3+','+t3+','+la3+','+pp4+','+t4+','+la4+'\n');
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -242,6 +247,18 @@ public abstract class Vehicle extends Agent {
             default:
                 break;
         }
+    }
+
+    int auctionsLeft(){
+        int TlLeft = 0;
+
+        for(int i = this.currentEdge; i < this.path.length; i++){
+            GraphEdge edge = path[i];
+            if(edge.getEnd().getTl() != null)
+                TlLeft++;
+        }
+
+        return TlLeft;
     }
 
     /**
@@ -457,6 +474,9 @@ public abstract class Vehicle extends Agent {
                                     else
                                         triesAuction.set(auctions-1,retry);
 
+                                    if(leftAuctions.size() < auctions)
+                                        leftAuctions.add(auctionsLeft());
+
                                     retry++;
                                     replyToFirstCarMsg.setPerformative(ACLMessage.PROPOSE);
                                     replyToFirstCarMsg.setContent(String.valueOf(lastPriorityPoints));
@@ -575,6 +595,9 @@ public abstract class Vehicle extends Agent {
                             triesAuction.add(retry);
                         else
                             triesAuction.set(auctions-1,retry);
+
+                        if(leftAuctions.size() < auctions)
+                            leftAuctions.add(auctionsLeft());
 
                         retry++;
                         if(Main.debug)

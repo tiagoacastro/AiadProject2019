@@ -72,7 +72,8 @@ public class Main {
 
         createAgents();
 
-        long end = System.currentTimeMillis() + 120000;
+        long start = System.currentTimeMillis();
+        long end = start + 120000;
 
         try{
             while(vehiclesRunning > 0 && System.currentTimeMillis() < end)
@@ -83,6 +84,8 @@ public class Main {
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        System.out.println("Execution took: " + (System.currentTimeMillis() - start)/1000 + "s");
 
         stop(scheduler);
     }
@@ -143,8 +146,8 @@ public class Main {
                 bw.write("sep=,");
                 bw.newLine();
                 bw.write("type,\"start node\",\"dest. node\",\"start pps\",wave,\"max tries\",\"turns needed\"" +
-                        ",\"1st auc. pps\",\"1st auc. tries\",\"2nd auc. pps\",\"2nd auc. tries\"" +
-                        ",\"3rd auc. pps\",\"3rd auc. tries\",\"4th auc. pps\",\"4th auc. tries\"");
+                        ",\"1st auc. pps\",\"1st auc. tries\",\"1st auc. left aucs.\",\"2nd auc. pps\",\"2nd auc. tries\",\"2nd auc. left aucs.\"" +
+                        ",\"3rd auc. pps\",\"3rd auc. tries\",\"3rd auc. left aucs.\",\"4th auc. pps\",\"4th auc. tries\",\"4th auc. left aucs.\"");
                 bw.newLine();
             }
         } catch (Exception e){

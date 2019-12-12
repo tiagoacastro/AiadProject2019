@@ -32,16 +32,10 @@ public class Car extends Vehicle{
     @Override
     int choosePriorityPoints(){
 
-        int TlLeft = 0;
-
         if(retry > maxTries)
            retry = maxTries;
 
-        for(int i = this.currentEdge; i < this.path.length; i++){
-           GraphEdge edge = path[i];
-           if(edge.getEnd().getTl() != null)
-               TlLeft++;
-        }
+        int TlLeft = auctionsLeft();
 
         if(TlLeft == 1)
            return priorityPoints;
