@@ -140,7 +140,7 @@ public class Main {
                 writeHeader = true;
             }
 
-            bw = new BufferedWriter(new FileWriter(file));
+            bw = new BufferedWriter(new FileWriter(file,true));
 
             if(writeHeader){
                 bw.write("sep=,");
