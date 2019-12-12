@@ -525,6 +525,7 @@ public abstract class Vehicle extends Agent {
                                     System.out.println(nickname + " sent INFORM to DONT_GO to the ones behind him");
 
                                 lastPriorityPoints = 0;
+                                step = 0;
                             }
                             retry = 1;
                             informMsg.setConversationId("inform_auction");
@@ -540,6 +541,7 @@ public abstract class Vehicle extends Agent {
                                 waiting = false;
                                 pass = true;
                                 priorityPoints -= lastPriorityPoints;
+                                step = 4;
                             }
                             else if((message.getContent()).equals("DONT_GO")){
                                 if(Main.debug)

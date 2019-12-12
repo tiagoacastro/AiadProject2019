@@ -73,7 +73,7 @@ public class Main {
         createAgents();
 
         long start = System.currentTimeMillis();
-        long end = start + 120000;
+        long end = start + 90000;
 
         try{
             while(vehiclesRunning > 0 && System.currentTimeMillis() < end)
