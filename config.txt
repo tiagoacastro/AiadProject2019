@@ -1,6 +1,6 @@
 false
 false
-1500
+1000
 8
 
 Rushed 0 8 100 4
