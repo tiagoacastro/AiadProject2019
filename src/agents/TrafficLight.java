@@ -142,20 +142,6 @@ public class TrafficLight extends Agent {
                             break;
                     }
 
-//                    System.out.println(nickname + "[");
-//                    for(int k = 0; k < regressionArray.length; k++){
-//                        System.out.print("[");
-//                        for(int j = 0; j < regressionArray[k].size(); j++){
-//                            System.out.print("[");
-//                            for(int z = 0; z < regressionArray[k].get(j).length; z++){
-//                                System.out.print(regressionArray[k].get(j)[z] + ", ");
-//                            }
-//                            System.out.println("]");
-//                        }
-//                        System.out.println("]");
-//                    }
-//                    System.out.println("]");
-
                     ACLMessage acceptMsg = new ACLMessage(ACLMessage.CONFIRM);
                     acceptMsg.addReceiver(msg.getSender());
                     acceptMsg.setConversationId("accept_inform");
@@ -250,6 +236,28 @@ public class TrafficLight extends Agent {
 
                         if(reply != null) {
 
+                            int rightLane = -1;
+                            for(int k = 0; k < lanes.length; k++){
+                                if(lanes[k].size() != 0){
+                                    if(reply.getSender().equals(lanes[k].get(0))){
+                                        rightLane = k;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            String appendContent = "" + maxPP + "," + reply.getContent();
+                            for(int k = 0; k < regressionArray[rightLane].size(); k++){
+
+                                appendContent += "," + regressionArray[rightLane].get(k)[0];
+                                appendContent += "," + regressionArray[rightLane].get(k)[1];
+                                appendContent += "," + regressionArray[rightLane].get(k)[2];
+                                appendContent += "," + regressionArray[rightLane].get(k)[3];
+                            }
+                            appendContent += "\n";
+                            Main.sbReg.append(appendContent);
+
+
                             if(reply.getPerformative() == ACLMessage.PROPOSE) {
 
                                 maxPP = Integer.parseInt(reply.getContent());
@@ -301,6 +309,7 @@ public class TrafficLight extends Agent {
                         else{
 
                             lanes[j] = new ArrayList<>();
+                            regressionArray[j] = new ArrayList<>();
                         }
                     }
                 }

@@ -358,12 +358,12 @@ public abstract class Vehicle extends Agent {
                             step = 2;
 
                             if(Main.debug)
-                                System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
+                                System.out.println("ACCEPTED INFORM FROM " + nickname);
                         } else {
                             step = 0;
 
                             if(Main.debug)
-                                System.out.println("REFUSED INFORM FROM " + nickname + "\n");
+                                System.out.println("REFUSED INFORM FROM " + nickname);
                         }
                     }
                     break;
@@ -666,6 +666,7 @@ public abstract class Vehicle extends Agent {
                             replyToTL.setConversationId("car_tl_auction");
                             replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
                             replyToTL.addReceiver(tlAid);
+                            replyToTL.setContent(String.valueOf(totalProposedPP));
                             myAgent.send(replyToTL);
 
                             if(Main.debug)
