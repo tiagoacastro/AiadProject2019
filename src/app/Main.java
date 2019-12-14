@@ -180,8 +180,8 @@ public class Main {
             bwReg = new BufferedWriter(new FileWriter(fileReg, true));
 
             if(writeHeaderReg){
-                bw.write("sep=,");
-                bw.newLine();
+                bwReg.write("sep=,");
+                bwReg.newLine();
                 bwReg.write("\"PPs to beat\",\"PPs given\",\"veh1 type\",\"veh1 PPs\",\"veh1 max tries\",\"veh1 tls left\"" +
                         ",\"veh2 type\",\"veh2 PPs\",\"veh2 max tries\",\"veh2 tls left\"" +
                         ",\"veh3 type\",\"veh3 PPs\",\"veh3 max tries\",\"veh3 tls left\"" +
