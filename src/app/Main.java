@@ -177,14 +177,14 @@ public class Main {
                 writeHeaderReg = true;
             }
 
-            bwReg = new BufferedWriter(new FileWriter(fileReg));
+            bwReg = new BufferedWriter(new FileWriter(fileReg, true));
 
             if(writeHeaderReg){
-                bwReg.write("PPs to beat,\"PPs given\",\"veh1 type\",\"veh1 PPs\",\"veh1 max tries\",veh1 tls left\"" +
-                        ",\"veh2 type\",\"veh2 PPs\",\"veh2 max tries\",veh2 tls left\"" +
-                        ",\"veh3 type\",\"veh3 PPs\",\"veh3 max tries\",veh3 tls left\"" +
-                        ",\"veh4 type\",\"veh4 PPs\",\"veh4 max tries\",veh4 tls left\"" +
-                        ",\"veh5 type\",\"veh5 PPs\",\"veh5 max tries\",veh5 tls left\"");
+                bwReg.write("\"PPs to beat\",\"PPs given\",\"veh1 type\",\"veh1 PPs\",\"veh1 max tries\",\"veh1 tls left\"" +
+                        ",\"veh2 type\",\"veh2 PPs\",\"veh2 max tries\",\"veh2 tls left\"" +
+                        ",\"veh3 type\",\"veh3 PPs\",\"veh3 max tries\",\"veh3 tls left\"" +
+                        ",\"veh4 type\",\"veh4 PPs\",\"veh4 max tries\",\"veh4 tls left\"" +
+                        ",\"veh5 type\",\"veh5 PPs\",\"veh5 max tries\",\"veh5 tls left\"");
                 bwReg.newLine();
             }
         } catch (Exception e){
