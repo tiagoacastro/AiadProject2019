@@ -1,0 +1,14 @@
+PPs to beat,"PPs given","veh1 type","veh1 PPs","veh1 max tries",veh1 tls left","veh2 type","veh2 PPs","veh2 max tries",veh2 tls left","veh3 type","veh3 PPs","veh3 max tries",veh3 tls left","veh4 type","veh4 PPs","veh4 max tries",veh4 tls left","veh5 type","veh5 PPs","veh5 max tries",veh5 tls left"
+0,12,Car,100,4,2
+0,6,Car,100,4,4
+0,308,Car,100,4,3,Ambulance,999,1,3
+308,100,RushedCar,100,4,3
+0,25,RushedCar,100,4,3
+0,311,Car,92,4,2,Ambulance,699,1,2
+0,18,RushedCar,75,4,2
+0,88,Car,88,4,1
+88,31,Car,94,4,3
+0,388,Car,94,4,3,Car,81,4,1,Ambulance,699,1,1
+0,57,RushedCar,57,4,1
+0,10,Car,87,4,2
+0,77,Car,77,4,1

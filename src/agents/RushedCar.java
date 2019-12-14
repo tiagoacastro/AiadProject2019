@@ -23,6 +23,7 @@ public class RushedCar extends Vehicle{
      */
     public RushedCar(int startingNode, int targetNode, int priorityPoints, int maxTries){
         super(Graph.nodes.get(startingNode), Graph.nodes.get(targetNode), priorityPoints, maxTries);
+        this.vehicleType = "RushedCar";
     }
 
     /**

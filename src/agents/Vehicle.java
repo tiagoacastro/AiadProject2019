@@ -84,6 +84,8 @@ public abstract class Vehicle extends Agent {
 
     private int turnsTaken = 0;
 
+    String vehicleType;
+
     /**
      * Vehicle constructor
      * @param startingNode      start
@@ -343,7 +345,18 @@ public abstract class Vehicle extends Agent {
                     informMsg.addReceiver(path[currentEdge].getTlAid());
                     informMsg.setConversationId("inform");
                     informMsg.setReplyWith("inform" + System.currentTimeMillis()); // To ensure unique values
-                    informMsg.setContent(String.valueOf(path[currentEdge].getDirection()));
+                    String contentStr = String.valueOf(path[currentEdge].getDirection());
+                    contentStr += "/" + vehicleType;
+                    contentStr += "/" + priorityPoints;
+                    contentStr += "/" + maxTries;
+                    int TlLeft = 0;
+                    for(int i = currentEdge; i < path.length; i++){
+                        GraphEdge edge = path[i];
+                        if(edge.getEnd().getTl() != null)
+                            TlLeft++;
+                    }
+                    contentStr += "/" + TlLeft;
+                    informMsg.setContent(contentStr);
                     myAgent.send(informMsg);
 
                     step = 1;
@@ -362,12 +375,12 @@ public abstract class Vehicle extends Agent {
                             step = 2;
 
                             if(Main.debug)
-                                System.out.println("ACCEPTED INFORM FROM " + nickname + "\n");
+                                System.out.println("ACCEPTED INFORM FROM " + nickname);
                         } else {
                             step = 0;
 
                             if(Main.debug)
-                                System.out.println("REFUSED INFORM FROM " + nickname + "\n");
+                                System.out.println("REFUSED INFORM FROM " + nickname);
                         }
                     }
                     break;
@@ -678,6 +691,7 @@ public abstract class Vehicle extends Agent {
                             replyToTL.setConversationId("car_tl_auction");
                             replyToTL.setReplyWith("proposal" + System.currentTimeMillis());
                             replyToTL.addReceiver(tlAid);
+                            replyToTL.setContent(String.valueOf(totalProposedPP));
                             myAgent.send(replyToTL);
 
                             if(Main.debug)

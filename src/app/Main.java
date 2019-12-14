@@ -5,6 +5,7 @@ import agents.*;
 import graphics.MapGraphic;
 import jade.core.Runtime;
 import jade.core.ProfileImpl;
+import jade.imtp.leap.nio.BufferTransformer;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
@@ -54,6 +55,14 @@ public class Main {
      */
     public static StringBuilder sb = new StringBuilder();
     /*
+        results file buffered writer for the regression problem
+     */
+    private static BufferedWriter bwReg;
+    /*
+        results buffer for the regression problem
+     */
+    public static StringBuilder sbReg = new StringBuilder();
+    /*
         Number of vehicles running
      */
     public static volatile int vehiclesRunning = 0;
@@ -79,8 +88,10 @@ public class Main {
             while(vehiclesRunning > 0 && System.currentTimeMillis() < end)
                 Thread.sleep(tick);
 
-            if(System.currentTimeMillis() < end)
+            if(System.currentTimeMillis() < end) {
                 bw.write(sb.toString());
+                bwReg.write(sbReg.toString());
+            }
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -101,6 +112,12 @@ public class Main {
 
         try{
             bw.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            bwReg.close();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -149,6 +166,26 @@ public class Main {
                         ",\"1st auc. pps\",\"1st auc. tries\",\"1st auc. left aucs.\",\"2nd auc. pps\",\"2nd auc. tries\",\"2nd auc. left aucs.\"" +
                         ",\"3rd auc. pps\",\"3rd auc. tries\",\"3rd auc. left aucs.\",\"4th auc. pps\",\"4th auc. tries\",\"4th auc. left aucs.\"");
                 bw.newLine();
+            }
+
+            /*                          Regression Problem File                         */
+            File fileReg = new File("resultsReg.csv");
+
+            boolean writeHeaderReg = true;
+            if (!fileReg.exists()) {
+                fileReg.createNewFile();
+                writeHeaderReg = true;
+            }
+
+            bwReg = new BufferedWriter(new FileWriter(fileReg));
+
+            if(writeHeaderReg){
+                bwReg.write("PPs to beat,\"PPs given\",\"veh1 type\",\"veh1 PPs\",\"veh1 max tries\",veh1 tls left\"" +
+                        ",\"veh2 type\",\"veh2 PPs\",\"veh2 max tries\",veh2 tls left\"" +
+                        ",\"veh3 type\",\"veh3 PPs\",\"veh3 max tries\",veh3 tls left\"" +
+                        ",\"veh4 type\",\"veh4 PPs\",\"veh4 max tries\",veh4 tls left\"" +
+                        ",\"veh5 type\",\"veh5 PPs\",\"veh5 max tries\",veh5 tls left\"");
+                bwReg.newLine();
             }
         } catch (Exception e){
             e.printStackTrace();
